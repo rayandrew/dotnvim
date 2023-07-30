@@ -20,12 +20,20 @@ require("lazy").setup({
     lazy = false,
     version = false,
   },
+  checker = {
+    enabled = true,
+    notify = false,
+    frequency = 3600 * 12,
+  },
   change_detection = {
     enabled = true,
     notify = false,
   },
-  checker = { enabled = true },
   performance = {
+    cache = {
+      enabled = true,
+    },
+    reset_packpath = true,
     rtp = {
       -- disable some rtp plugins
       disabled_plugins = {

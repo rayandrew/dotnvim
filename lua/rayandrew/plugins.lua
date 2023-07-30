@@ -4,6 +4,16 @@ return {
   { "folke/lazy.nvim", version = "*" },
   { "nvim-lua/plenary.nvim", lazy = true },
 
+  {
+    "dstein64/vim-startuptime",
+    -- lazy-load on a command
+    cmd = "StartupTime",
+    -- init is called during startup. Configuration for vim plugins typically should be set in an init function
+    init = function()
+      vim.g.startuptime_tries = 10
+    end,
+  },
+
   ------------------------------
   --         Telescope
   ------------------------------
@@ -19,6 +29,17 @@ return {
         function()
           local Util = require("rayandrew.util")
           local fun = Util.telescope("live_grep")
+          fun()
+        end,
+        desc = "Find in Files (Grep)",
+      },
+      {
+        "<leader>ps",
+        function()
+          local Util = require("rayandrew.util")
+          local fun = Util.telescope("grep_string", {
+            search = vim.fn.input("Grep > "),
+          })
           fun()
         end,
         desc = "Find in Files (Grep)",
@@ -49,6 +70,33 @@ return {
           fun()
         end,
         desc = "Find Files (cwd)",
+      },
+      {
+        "<c-p>",
+        function()
+          local Util = require("rayandrew.util")
+          local fun = Util.telescope("git_files")
+          fun()
+        end,
+        desc = "Find Git Files",
+      },
+      {
+        "<space>sm",
+        function()
+          local Util = require("rayandrew.util")
+          local fun = Util.telescope("man_pages")
+          fun()
+        end,
+        desc = "Find Manual",
+      },
+      {
+        "<space>sh",
+        function()
+          local Util = require("rayandrew.util")
+          local fun = Util.telescope("help_tags")
+          fun()
+        end,
+        desc = "Find Help Tags",
       },
     },
   },
@@ -290,7 +338,6 @@ return {
 
   {
     "folke/noice.nvim",
-    enabled = true,
     event = "VeryLazy",
     opts = {
       lsp = {
@@ -299,6 +346,16 @@ return {
           ["vim.lsp.util.stylize_markdown"] = true,
           ["cmp.entry.get_documentation"] = true,
         },
+        hover = {
+          enabled = false,
+        },
+        signature = {
+          enabled = false,
+        },
+      },
+      cmdline = {
+        enabled = true,
+        view = "cmdline",
       },
       routes = {
         {
@@ -567,7 +624,7 @@ return {
     "hrsh7th/nvim-cmp",
     event = "InsertEnter",
     dependencies = {
-      { "L3MON4D3/LuaSnip" },
+      { "L3MON4D3/LuaSnip", build = "make install_jsregexp" },
       {
         "zbirenbaum/copilot-cmp",
         dependencies = "copilot.lua",
@@ -601,23 +658,28 @@ return {
           { name = "path", group_index = 2 },
           { name = "luasnip", group_index = 2 },
         },
-        mapping = {
+        mapping = cmp.mapping.preset.insert({
           ["<C-Space>"] = cmp.mapping.complete(),
           ["<C-f>"] = cmp_action.luasnip_jump_forward(),
           ["<C-b>"] = cmp_action.luasnip_jump_backward(),
           ["<C-p>"] = cmp.mapping.select_prev_item(cmp_select),
           ["<C-n>"] = cmp.mapping.select_next_item(cmp_select),
           ["<C-y>"] = cmp.mapping.confirm({ select = true }),
-          ["<Tab>"] = nil,
-          ["<S-Tab>"] = nil,
+          ["<Tab>"] = cmp_action.luasnip_supertab(),
+          ["<S-Tab>"] = cmp_action.luasnip_supertab(),
           ["<CR>"] = cmp.mapping.confirm({
             -- documentation says this is important.
             -- I don't know why.
             behavior = cmp.ConfirmBehavior.Replace,
             select = false,
           }),
-        },
+        }),
         sorting,
+        snippet = {
+          expand = function(args)
+            require("luasnip").lsp_expand(args.body)
+          end,
+        },
       })
     end,
   },
@@ -797,10 +859,12 @@ return {
   },
 
   -- comments
-  { "JoosepAlviste/nvim-ts-context-commentstring", lazy = true },
   {
     "echasnovski/mini.comment",
     event = "VeryLazy",
+    dependencies = {
+      { "JoosepAlviste/nvim-ts-context-commentstring", lazy = true },
+    },
     opts = {
       options = {
         custom_commentstring = function()
@@ -811,11 +875,154 @@ return {
     },
   },
 
+  -- RSI compatibility
+  {
+    "linty-org/readline.nvim",
+    event = "VeryLazy",
+    keys = {
+      {
+        "<M-f>",
+        function()
+          require("readline").forward_word()
+        end,
+        mode = "!",
+      },
+      {
+        "<M-b>",
+        function()
+          require("readline").backward_word()
+        end,
+        mode = "!",
+      },
+      {
+        "<M-d>",
+        function()
+          require("readline").kill_word()
+        end,
+        mode = "!",
+      },
+      {
+        "<M-BS>",
+        function()
+          require("readline").backward_kill_word()
+        end,
+        mode = "!",
+      },
+      {
+        "<C-w>",
+        function()
+          require("readline").unix_word_rubout()
+        end,
+        mode = "!",
+      },
+      {
+        "<C-k>",
+        function()
+          require("readline").kill_line()
+        end,
+        mode = "!",
+      },
+      {
+        "<C-u>",
+        function()
+          require("readline").backward_kill_line()
+        end,
+        mode = "!",
+      },
+      {
+        "<C-a>",
+        function()
+          require("readline").beginning_of_line()
+        end,
+        mode = "!",
+      },
+      {
+        "<C-e>",
+        function()
+          require("readline").end_of_line()
+        end,
+        mode = "!",
+      },
+      { "<C-f>", "<Right>", mode = "!" }, -- forward-char
+      { "<C-b>", "<Left>", mode = "!" }, -- backward-char
+      { "<C-n>", "<Down>", mode = "!" }, -- next-line
+      { "<C-p>", "<Up>", mode = "!" }, -- previous-line
+      { "<C-d>", "<Delete>", mode = "!" }, -- delete-char
+      { "<C-h>", "<BS>", mode = "!" }, -- backward-delete-char
+    },
+  },
   {
     "tpope/vim-fugitive",
+    cmd = { "Git" },
+  },
+  {
+    "laytan/cloak.nvim",
+    event = {
+      "BufEnter .env*",
+    },
+    cmd = {
+      "CloakEnable",
+      "CloakDisable",
+      "CloakToggle",
+    },
+    opts = {
+      enabled = true,
+      cloak_character = "*",
+      -- The applied highlight group (colors) on the cloaking, see `:h highlight`.
+      highlight_group = "Comment",
+      patterns = {
+        {
+          file_pattern = {
+            ".env*",
+            ".dev.vars",
+          },
+          -- Match an equals sign and any character after it.
+          -- This can also be a table of patterns to cloak,
+          -- example: cloak_pattern = { ":.+", "-.+" } for yaml files.
+          cloak_pattern = "=.+",
+        },
+      },
+    },
+    config = function(_, opts)
+      require("cloak").setup(opts)
+    end,
   },
   {
     "theprimeagen/harpoon",
+    event = "VeryLazy",
+    keys = {
+      {
+        "<leader>ha",
+        function()
+          local mark = require("harpoon.mark")
+          mark.add_file()
+          vim.print("Added to Harpoon " .. vim.fn.expand("%"))
+        end,
+        desc = "Harpoon Add File",
+      },
+      {
+        "<leader>he",
+        function()
+          local ui = require("harpoon.ui")
+          ui.toggle_quick_menu()
+        end,
+        desc = "Harpoon UI",
+      },
+      {
+        "<leader>h1",
+        function()
+          local ui = require("harpoon.ui")
+          ui.nav_file(1)
+        end,
+      },
+      {
+        "<leader>h2",
+        function()
+          local ui = require("harpoon.ui")
+          ui.nav_file(2)
+        end,
+      },
+    },
   },
   {
     "theprimeagen/refactoring.nvim",
@@ -949,8 +1156,45 @@ return {
       wk.register(opts.defaults)
     end,
   },
+
+  -- zen
   {
     "folke/zen-mode.nvim",
+    opts = {
+      window = {
+        width = 90,
+      },
+      plugins = {
+        tmux = {
+          enabled = true,
+        },
+      },
+      on_open = function(_win)
+        vim.wo.wrap = false
+        vim.wo.number = false
+        vim.wo.rnu = false
+      end,
+      on_close = function()
+        vim.wo.wrap = true
+        vim.wo.number = true
+        vim.wo.rnu = true
+      end,
+    },
+    keys = {
+      {
+        "<leader>z",
+        function()
+          -- require("zen-mode").setup({
+          --   window = {
+          --     width = 90,
+          --     options = {},
+          --   },
+          -- })
+          require("zen-mode").toggle()
+          require("rayandrew.theme").recolor()
+        end,
+      },
+    },
   },
 
   -- Flash Telescope config
@@ -999,7 +1243,6 @@ return {
   },
 
   -- Copilot Lualine
-
   {
     "nvim-lualine/lualine.nvim",
     -- optional = true,
