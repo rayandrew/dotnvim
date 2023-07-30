@@ -777,7 +777,7 @@ return {
           timeout_ms = 10000,
         },
         servers = {
-          ["null-ls"] = { "javascript", "typescript", "lua" },
+          ["null-ls"] = { "javascript", "typescript", "lua", "python" },
         },
       })
 
@@ -811,24 +811,101 @@ return {
         -- 	-- nls.builtins.diagnostics.flake8,
         -- },
 
-        ensure_installed = nil,
-        automatic_installation = false, -- You can still set this to `true`
-        handlers = {
-          function() end, -- disables automatic setup of all null-ls sources
-          stylua = function(source_name, methods)
-            nls.register(nls.builtins.formatting.stylua)
-          end,
+        ensure_installed = {
+          "taplo",
+
+          "prettier",
+          "eslint_d",
+
+          "black",
+          "isort",
+
+          "shfmt",
+          "jq",
+
+          "stylua",
+
+          "nixpkgs_fmt",
+
+          "latexindent",
         },
+        automatic_installation = false, -- You can still set this to `true`
+        handlers = {},
+        -- handlers = {
+        -- function() end, -- disables automatic setup of all null-ls sources
+        --   stylua = function(source_name, methods)
+        --     nls.register(nls.builtins.formatting.stylua)
+        --   end,
+        -- },
       }
     end,
     config = function(_, opts)
-      require("null-ls").setup({
+      local nls = require("null-ls")
+      nls.setup({
         root_dir = require("null-ls.utils").root_pattern(
           ".null-ls-root",
           ".neoconf.json",
           "Makefile",
           ".git"
         ),
+        sources = {
+          nls.builtins.completion.spell,
+          nls.builtins.code_actions.gitsigns,
+
+          -- web
+          nls.builtins.formatting.prettier.with({
+            extra_filetypes = { "svelte" },
+          }), -- js/ts formatter
+          nls.builtins.diagnostics.eslint_d.with({
+            -- js/ts linter
+            -- only enable eslint if root has .eslintrc.js (not in youtube nvim video)
+            condition = function(utils)
+              return utils.root_has_file(".eslintrc.js")
+                or utils.root_has_file(".eslintrc.cjs")
+            end,
+            filetypes = {
+              "javascript",
+              "javascriptreact",
+              "typescript",
+              "typescriptreact",
+              "vue",
+              "svelte",
+            },
+          }),
+          nls.builtins.code_actions.eslint_d.with({
+            filetypes = {
+              "javascript",
+              "javascriptreact",
+              "typescript",
+              "typescriptreact",
+              "vue",
+              "svelte",
+            },
+          }),
+
+          -- python
+          nls.builtins.formatting.black,
+          nls.builtins.formatting.isort,
+
+          -- shell
+          nls.builtins.formatting.shfmt,
+          nls.builtins.formatting.jq,
+
+          -- rust
+          nls.builtins.formatting.rustfmt,
+
+          -- nix
+          nls.builtins.formatting.nixpkgs_fmt,
+
+          -- config
+          nls.builtins.formatting.taplo,
+
+          -- lua
+          nls.builtins.formatting.stylua,
+
+          -- latex
+          nls.builtins.formatting.latexindent,
+        },
       })
       require("mason-null-ls").setup(opts)
     end,
