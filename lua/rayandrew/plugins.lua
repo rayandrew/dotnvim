@@ -594,6 +594,30 @@ return {
   --     LSP Configuration
   ------------------------------
 
+  -- Mason
+  {
+    "williamboman/mason-lspconfig.nvim",
+    name = "mason-lspconfig",
+    dependencies = {
+      { "williamboman/mason.nvim", lazy = true },
+      { "neovim/nvim-lspconfig", lazy = true },
+    },
+    opts = {
+      ensure_installed = {
+        "clangd",
+        "pyright",
+        -- "rnix",
+        "rust_analyzer",
+        "texlab",
+        "lua_ls",
+        "tsserver",
+      },
+    },
+    -- config = function(_, opts)
+    --   require("mason-lspconfig").setup(opts)
+    -- end,
+  },
+
   -- LSP Zero
   {
     "VonHeikemen/lsp-zero.nvim",
@@ -736,11 +760,6 @@ return {
 
       -- (Optional) Configure lua language server for neovim
       require("lspconfig").lua_ls.setup(lsp.nvim_lua_ls())
-
-      lsp.ensure_installed({
-        "tsserver",
-        "rust_analyzer",
-      })
 
       lsp.set_preferences({
         suggest_lsp_servers = false,
