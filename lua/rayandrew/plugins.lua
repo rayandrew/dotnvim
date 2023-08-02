@@ -72,6 +72,15 @@ return {
         end,
         desc = "Find Files (cwd)",
       },
+      {
+        "<leader>fh",
+        function()
+          local Util = require("rayandrew.util")
+          local fun = Util.telescope("files", { cwd = false, hidden = true })
+          fun()
+        end,
+        desc = "Find Files with Hidden (cwd)",
+      },
       -- {
       --   "<c-p>",
       --   function()
