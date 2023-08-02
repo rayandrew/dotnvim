@@ -218,6 +218,16 @@ return {
   --     File Management
   ------------------------------
 
+  {
+    "stevearc/oil.nvim",
+    opts = {
+      default_file_explorer = true,
+      restore_win_options = true,
+    },
+    -- Optional dependencies
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+  },
+
   -- file explorer
   {
     "nvim-neo-tree/neo-tree.nvim",
@@ -266,12 +276,12 @@ return {
       vim.cmd([[Neotree close]])
     end,
     init = function()
-      if vim.fn.argc() == 1 then
-        local stat = vim.loop.fs_stat(vim.fn.argv(0))
-        if stat and stat.type == "directory" then
-          require("neo-tree")
-        end
-      end
+      -- if vim.fn.argc() == 1 then
+      --   local stat = vim.loop.fs_stat(vim.fn.argv(0))
+      --   if stat and stat.type == "directory" then
+      --     require("neo-tree")
+      --   end
+      -- end
     end,
     opts = {
       sources = { "filesystem", "buffers", "git_status", "document_symbols" },

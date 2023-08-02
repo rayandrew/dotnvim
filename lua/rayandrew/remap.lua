@@ -109,19 +109,20 @@ end, { desc = "Lazygit (cwd)" })
 local lazyterm = function()
   Util.float_term(nil, { cwd = Util.get_root() })
 end
-Util.map("n", "<leader>ft", lazyterm, { desc = "Terminal (root dir)" })
-Util.map("n", "<leader>fT", function()
+Util.map("n", "<leader>tt", lazyterm, { desc = "Terminal (root dir)" })
+Util.map("n", "<leader>tT", function()
   Util.float_term()
 end, { desc = "Terminal (cwd)" })
-Util.map("n", "<c-`>", lazyterm, { desc = "Terminal (root dir)" })
+Util.map("n", "`", lazyterm, { desc = "Terminal (root dir)" })
+-- Util.map("n", "<c-`>", lazyterm, { desc = "Terminal (root dir)" })
 Util.map("n", "<c-/>", lazyterm, { desc = "Terminal (root dir)" })
 Util.map("n", "<c-_>", lazyterm, { desc = "which_key_ignore" })
 
 Util.map("t", "<esc><esc>", "<c-\\><c-n>", { desc = "Enter Normal Mode" })
-Util.map("t", "<C-h>", "<cmd>wincmd h<cr>", { desc = "Go to left window" })
-Util.map("t", "<C-j>", "<cmd>wincmd j<cr>", { desc = "Go to lower window" })
-Util.map("t", "<C-k>", "<cmd>wincmd k<cr>", { desc = "Go to upper window" })
-Util.map("t", "<C-l>", "<cmd>wincmd l<cr>", { desc = "Go to right window" })
+-- Util.map("t", "<C-h>", "<cmd>wincmd h<cr>", { desc = "Go to left window" })
+-- Util.map("t", "<C-j>", "<cmd>wincmd j<cr>", { desc = "Go to lower window" })
+-- Util.map("t", "<C-k>", "<cmd>wincmd k<cr>", { desc = "Go to upper window" })
+-- Util.map("t", "<C-l>", "<cmd>wincmd l<cr>", { desc = "Go to right window" })
 Util.map("t", "<C-/>", "<cmd>close<cr>", { desc = "Hide Terminal" })
 Util.map("t", "<c-_>", "<cmd>close<cr>", { desc = "which_key_ignore" })
 
@@ -131,3 +132,6 @@ Util.map("t", "<c-_>", "<cmd>close<cr>", { desc = "which_key_ignore" })
 
 -- lazy
 Util.map("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy" })
+
+-- oil
+vim.keymap.set("n", "-", require("oil").open, { desc = "Open parent directory" })
