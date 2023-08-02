@@ -220,6 +220,16 @@ return {
 
   {
     "stevearc/oil.nvim",
+    cmd = { "Oil" },
+    keys = {
+      {
+        "-",
+        function()
+          require("oil").open()
+        end,
+        desc = "Open parent directory",
+      },
+    },
     opts = {
       default_file_explorer = true,
       restore_win_options = true,

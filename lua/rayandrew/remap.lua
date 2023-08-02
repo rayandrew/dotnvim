@@ -132,6 +132,3 @@ Util.map("t", "<c-_>", "<cmd>close<cr>", { desc = "which_key_ignore" })
 
 -- lazy
 Util.map("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy" })
-
--- oil
-vim.keymap.set("n", "-", require("oil").open, { desc = "Open parent directory" })
