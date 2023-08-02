@@ -8,7 +8,8 @@ return {
     "dstein64/vim-startuptime",
     -- lazy-load on a command
     cmd = "StartupTime",
-    -- init is called during startup. Configuration for vim plugins typically should be set in an init function
+    -- init is called during startup.
+    -- Configuration for vim plugins typically should be set in an init function
     init = function()
       vim.g.startuptime_tries = 10
     end,
@@ -71,15 +72,15 @@ return {
         end,
         desc = "Find Files (cwd)",
       },
-      {
-        "<c-p>",
-        function()
-          local Util = require("rayandrew.util")
-          local fun = Util.telescope("git_files")
-          fun()
-        end,
-        desc = "Find Git Files",
-      },
+      -- {
+      --   "<c-p>",
+      --   function()
+      --     local Util = require("rayandrew.util")
+      --     local fun = Util.telescope("git_files")
+      --     fun()
+      --   end,
+      --   desc = "Find Git Files",
+      -- },
       {
         "<space>sm",
         function()
@@ -114,9 +115,7 @@ return {
           -- disable rtp plugin, as we only need its queries for mini.ai
           -- In case other textobject modules are enabled, we will load them
           -- once nvim-treesitter is loaded
-          require("lazy.core.loader").disable_rtp_plugin(
-            "nvim-treesitter-textobjects"
-          )
+          require("lazy.core.loader").disable_rtp_plugin("nvim-treesitter-textobjects")
           load_textobjects = true
         end,
       },
@@ -181,8 +180,7 @@ return {
             if opts.textobjects[mod] and opts.textobjects[mod].enable then
               local Loader = require("lazy.core.loader")
               Loader.disabled_rtp_plugins["nvim-treesitter-textobjects"] = nil
-              local plugin =
-                require("lazy.core.config").plugins["nvim-treesitter-textobjects"]
+              local plugin = require("lazy.core.config").plugins["nvim-treesitter-textobjects"]
               require("lazy.core.loader").source_runtime(plugin.dir, "plugin")
               break
             end
@@ -461,6 +459,13 @@ return {
         "notify",
         "toggleterm",
         "lazyterm",
+        "qf",
+      },
+      buftype_exclude = {
+        "terminal",
+        "nofile",
+        "quickfix",
+        "prompt",
       },
       show_trailing_blankline_indent = false,
       show_current_context = false,
@@ -629,19 +634,19 @@ return {
   },
 
   -- Copilot
-  {
-    "zbirenbaum/copilot.lua",
-    cmd = "Copilot",
-    build = ":Copilot auth",
-    opts = {
-      suggestion = { enabled = false },
-      panel = { enabled = false },
-      filetypes = {
-        markdown = true,
-        help = true,
-      },
-    },
-  },
+  -- {
+  --   "zbirenbaum/copilot.lua",
+  --   cmd = "Copilot",
+  --   build = ":Copilot auth",
+  --   opts = {
+  --     suggestion = { enabled = false },
+  --     panel = { enabled = false },
+  --     filetypes = {
+  --       markdown = true,
+  --       help = true,
+  --     },
+  --   },
+  -- },
 
   -- Autocompletion
   {
@@ -649,23 +654,24 @@ return {
     event = "InsertEnter",
     dependencies = {
       { "L3MON4D3/LuaSnip", build = "make install_jsregexp" },
-      {
-        "zbirenbaum/copilot-cmp",
-        dependencies = "copilot.lua",
-        opts = {},
-        config = function(_, opts)
-          local Util = require("rayandrew.util")
-          local copilot_cmp = require("copilot_cmp")
-          copilot_cmp.setup(opts)
-          -- attach cmp source whenever copilot attaches
-          -- fixes lazy-loading issues with the copilot cmp source
-          Util.on_attach(function(client)
-            if client.name == "copilot" then
-              copilot_cmp._on_insert_enter({})
-            end
-          end)
-        end,
-      },
+      -- {
+      --   "zbirenbaum/copilot-cmp",
+      --   dependencies = "copilot.lua",
+      --   enabled = false,
+      --   opts = {},
+      --   config = function(_, opts)
+      --     local Util = require("rayandrew.util")
+      --     local copilot_cmp = require("copilot_cmp")
+      --     copilot_cmp.setup(opts)
+      --     -- attach cmp source whenever copilot attaches
+      --     -- fixes lazy-loading issues with the copilot cmp source
+      --     Util.on_attach(function(client)
+      --       if client.name == "copilot" then
+      --         copilot_cmp._on_insert_enter({})
+      --       end
+      --     end)
+      --   end,
+      -- },
     },
     config = function()
       require("lsp-zero.cmp").extend()
@@ -677,7 +683,7 @@ return {
 
       cmp.setup({
         sources = {
-          { name = "copilot", group_index = 2 },
+          -- { name = "copilot", group_index = 2 },
           { name = "nvim_lsp", group_index = 2 },
           { name = "path", group_index = 2 },
           { name = "luasnip", group_index = 2 },
@@ -844,12 +850,7 @@ return {
     config = function(_, opts)
       local nls = require("null-ls")
       nls.setup({
-        root_dir = require("null-ls.utils").root_pattern(
-          ".null-ls-root",
-          ".neoconf.json",
-          "Makefile",
-          ".git"
-        ),
+        root_dir = require("null-ls.utils").root_pattern(".null-ls-root", ".neoconf.json", "Makefile", ".git"),
         sources = {
           nls.builtins.completion.spell,
           nls.builtins.code_actions.gitsigns,
@@ -862,8 +863,7 @@ return {
             -- js/ts linter
             -- only enable eslint if root has .eslintrc.js (not in youtube nvim video)
             condition = function(utils)
-              return utils.root_has_file(".eslintrc.js")
-                or utils.root_has_file(".eslintrc.cjs")
+              return utils.root_has_file(".eslintrc.js") or utils.root_has_file(".eslintrc.cjs")
             end,
             filetypes = {
               "javascript",
@@ -966,8 +966,7 @@ return {
     opts = {
       options = {
         custom_commentstring = function()
-          return require("ts_context_commentstring.internal").calculate_commentstring()
-            or vim.bo.commentstring
+          return require("ts_context_commentstring.internal").calculate_commentstring() or vim.bo.commentstring
         end,
       },
     },
@@ -1125,9 +1124,9 @@ return {
   {
     "theprimeagen/refactoring.nvim",
   },
-  -- {
-  --   "github/copilot.vim",
-  -- },
+  {
+    "github/copilot.vim",
+  },
   {
     "eandrju/cellular-automaton.nvim",
   },
@@ -1136,6 +1135,26 @@ return {
   },
   {
     "mbbill/undotree",
+  },
+  {
+    "skywind3000/asyncrun.vim",
+    cmd = { "AsyncRun", "AsyncStop" },
+    keys = {
+      {
+        "<leader>cc",
+        function()
+          local input = vim.fn.input("Command: ")
+          vim.cmd("AsyncRun " .. input)
+          -- vim.cmd("sleep 1")
+          -- vim.cmd("copen")
+        end,
+        desc = "AsyncRun",
+      },
+      { "<leader>ck", desc = "AsyncStop" },
+    },
+    config = function()
+      vim.g.asyncrun_open = 6
+    end,
   },
 
   -- Folke
@@ -1308,16 +1327,12 @@ return {
             mode = "search",
             exclude = {
               function(win)
-                return vim.bo[vim.api.nvim_win_get_buf(win)].filetype
-                  ~= "TelescopeResults"
+                return vim.bo[vim.api.nvim_win_get_buf(win)].filetype ~= "TelescopeResults"
               end,
             },
           },
           action = function(match)
-            local picker =
-              require("telescope.actions.state").get_current_picker(
-                prompt_bufnr
-              )
+            local picker = require("telescope.actions.state").get_current_picker(prompt_bufnr)
             picker:set_selection(match.pos[1] - 1)
           end,
         })
@@ -1341,37 +1356,37 @@ return {
   },
 
   -- Copilot Lualine
-  {
-    "nvim-lualine/lualine.nvim",
-    -- optional = true,
-    event = "VeryLazy",
-    opts = function(_, opts)
-      local Util = require("rayandrew.util")
-      local colors = {
-        [""] = Util.fg("Special"),
-        ["Normal"] = Util.fg("Special"),
-        ["Warning"] = Util.fg("DiagnosticError"),
-        ["InProgress"] = Util.fg("DiagnosticWarn"),
-      }
-      table.insert(opts.sections.lualine_x, 2, {
-        function()
-          local icon = require("rayandrew.themes").icons.kinds.Copilot
-          local status = require("copilot.api").status.data
-          return icon .. (status.message or "")
-        end,
-        cond = function()
-          local ok, clients =
-            pcall(vim.lsp.get_active_clients, { name = "copilot", bufnr = 0 })
-          return ok and #clients > 0
-        end,
-        color = function()
-          if not package.loaded["copilot"] then
-            return
-          end
-          local status = require("copilot.api").status.data
-          return colors[status.status] or colors[""]
-        end,
-      })
-    end,
-  },
+  -- {
+  --   "nvim-lualine/lualine.nvim",
+  --   -- optional = true,
+  --   event = "VeryLazy",
+  --   opts = function(_, opts)
+  --     local Util = require("rayandrew.util")
+  --     local colors = {
+  --       [""] = Util.fg("Special"),
+  --       ["Normal"] = Util.fg("Special"),
+  --       ["Warning"] = Util.fg("DiagnosticError"),
+  --       ["InProgress"] = Util.fg("DiagnosticWarn"),
+  --     }
+  --     table.insert(opts.sections.lualine_x, 2, {
+  --       function()
+  --         local icon = require("rayandrew.themes").icons.kinds.Copilot
+  --         local status = require("copilot.api").status.data
+  --         return icon .. (status.message or "")
+  --       end,
+  --       cond = function()
+  --         local ok, clients =
+  --           pcall(vim.lsp.get_active_clients, { name = "copilot", bufnr = 0 })
+  --         return ok and #clients > 0
+  --       end,
+  --       color = function()
+  --         if not package.loaded["copilot"] then
+  --           return
+  --         end
+  --         local status = require("copilot.api").status.data
+  --         return colors[status.status] or colors[""]
+  --       end,
+  --     })
+  --   end,
+  -- },
 }

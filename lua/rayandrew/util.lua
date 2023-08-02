@@ -16,8 +16,7 @@ end
 
 function M.fg(name)
   ---@type {foreground?:number}?
-  local hl = vim.api.nvim_get_hl and vim.api.nvim_get_hl(0, { name = name })
-    or vim.api.nvim_get_hl_by_name(name, true)
+  local hl = vim.api.nvim_get_hl and vim.api.nvim_get_hl(0, { name = name }) or vim.api.nvim_get_hl_by_name(name, true)
   local fg = hl and hl.fg or hl.foreground
   return fg and { fg = string.format("#%06x", fg) }
 end
@@ -106,12 +105,7 @@ function M.telescope(builtin, opts)
           local line = action_state.get_current_line()
           M.telescope(
             params.builtin,
-            vim.tbl_deep_extend(
-              "force",
-              {},
-              params.opts or {},
-              { cwd = false, default_text = line }
-            )
+            vim.tbl_deep_extend("force", {}, params.opts or {}, { cwd = false, default_text = line })
           )()
         end)
         return true
