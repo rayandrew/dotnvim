@@ -23,6 +23,25 @@ return {
     cmd = "Telescope",
     dependencies = { "nvim-lua/plenary.nvim" },
     version = false,
+    opts = {
+      pickers = {
+        buffers = {
+          mappings = {
+            i = {
+              ["<c-d>"] = function(prompt_bufnr)
+                local actions = require("telescope.actions")
+                actions.delete_buffer(prompt_bufnr)
+                actions.move_to_top(prompt_bufnr)
+                -- actions.delete_buffer + actions.move_to_top
+              end,
+            },
+            n = {
+              ["d"] = "delete_buffer",
+            },
+          },
+        },
+      },
+    },
     keys = {
       -- add a keymap to browse plugin files
       {
@@ -709,6 +728,13 @@ return {
     event = "InsertEnter",
     dependencies = {
       { "L3MON4D3/LuaSnip", build = "make install_jsregexp" },
+      { "rafamadriz/friendly-snippets" },
+      { "hrsh7th/nvim-cmp" },
+      { "hrsh7th/cmp-buffer" },
+      { "hrsh7th/cmp-path" },
+      { "saadparwaiz1/cmp_luasnip" },
+      { "hrsh7th/cmp-nvim-lsp" },
+      { "hrsh7th/cmp-nvim-lua" },
       -- {
       --   "zbirenbaum/copilot-cmp",
       --   dependencies = "copilot.lua",
