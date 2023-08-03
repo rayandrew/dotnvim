@@ -226,13 +226,13 @@ return {
     dependencies = { "nvim-tree/nvim-web-devicons" },
     cmd = { "Oil" },
     keys = {
-      {
-        "-",
-        function()
-          require("oil").open()
-        end,
-        desc = "Open parent directory",
-      },
+      -- {
+      --   "-",
+      --   function()
+      --     require("oil").open()
+      --   end,
+      --   desc = "Open parent directory",
+      -- },
       {
         "<leader>e",
         function()
