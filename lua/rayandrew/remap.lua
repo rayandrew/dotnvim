@@ -132,3 +132,8 @@ Util.map("t", "<c-_>", "<cmd>close<cr>", { desc = "which_key_ignore" })
 
 -- lazy
 Util.map("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy" })
+
+-- source file
+Util.map("n", "<leader><leader>", function()
+  vim.cmd("so")
+end)

@@ -143,6 +143,7 @@ return {
         "luap",
         "markdown",
         "markdown_inline",
+        "nix",
         "python",
         "query",
         "regex",
@@ -220,6 +221,7 @@ return {
 
   {
     "stevearc/oil.nvim",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
     cmd = { "Oil" },
     keys = {
       {
@@ -229,109 +231,133 @@ return {
         end,
         desc = "Open parent directory",
       },
+      {
+        "<leader>e",
+        function()
+          -- split window then open oil
+          -- vim.cmd.vsplit()
+          require("oil").open()
+        end,
+        desc = "Open current directory",
+      },
+      {
+        "<leader>E",
+        function()
+          -- split window then open oil
+          -- vim.cmd.vsplit()
+          require("oil").open(".")
+        end,
+        desc = "Open current directory",
+      },
     },
     opts = {
       default_file_explorer = true,
       restore_win_options = true,
     },
-    -- Optional dependencies
-    dependencies = { "nvim-tree/nvim-web-devicons" },
+    init = function()
+      if vim.fn.argc() == 1 then
+        local stat = vim.loop.fs_stat(vim.fn.argv(0))
+        if stat and stat.type == "directory" then
+          require("oil")
+        end
+      end
+    end,
   },
 
   -- file explorer
-  {
-    "nvim-neo-tree/neo-tree.nvim",
-    branch = "v3.x",
-    cmd = "Neotree",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "MunifTanjim/nui.nvim",
-    },
-    keys = {
-      {
-        "<leader>fE",
-        function()
-          local Util = require("rayandrew.util")
-          require("neo-tree.command").execute({
-            toggle = true,
-            dir = Util.get_root(),
-          })
-        end,
-        desc = "Explorer NeoTree (root dir)",
-      },
-      {
-        "<leader>fe",
-        function()
-          require("neo-tree.command").execute({
-            toggle = true,
-            dir = vim.loop.cwd(),
-          })
-        end,
-        desc = "Explorer NeoTree (cwd)",
-      },
-      {
-        "<leader>E",
-        "<leader>fE",
-        desc = "Explorer NeoTree (root dir)",
-        remap = true,
-      },
-      {
-        "<leader>e",
-        "<leader>fe",
-        desc = "Explorer NeoTree (cwd)",
-        remap = true,
-      },
-    },
-    deactivate = function()
-      vim.cmd([[Neotree close]])
-    end,
-    init = function()
-      -- if vim.fn.argc() == 1 then
-      --   local stat = vim.loop.fs_stat(vim.fn.argv(0))
-      --   if stat and stat.type == "directory" then
-      --     require("neo-tree")
-      --   end
-      -- end
-    end,
-    opts = {
-      sources = { "filesystem", "buffers", "git_status", "document_symbols" },
-      open_files_do_not_replace_types = {
-        "terminal",
-        "Trouble",
-        "qf",
-        "Outline",
-      },
-      filesystem = {
-        bind_to_cwd = false,
-        follow_current_file = { enabled = true },
-        use_libuv_file_watcher = true,
-      },
-      window = {
-        mappings = {
-          ["<space>"] = "none",
-        },
-      },
-      default_component_configs = {
-        indent = {
-          with_expanders = true, -- if nil and file nesting is enabled, will enable expanders
-          expander_collapsed = "",
-          expander_expanded = "",
-          expander_highlight = "NeoTreeExpander",
-        },
-      },
-    },
-    config = function(_, opts)
-      require("neo-tree").setup(opts)
-      vim.api.nvim_create_autocmd("TermClose", {
-        pattern = "*lazygit",
-        callback = function()
-          if package.loaded["neo-tree.sources.git_status"] then
-            require("neo-tree.sources.git_status").refresh()
-          end
-        end,
-      })
-    end,
-  },
+  -- {
+  --   "nvim-neo-tree/neo-tree.nvim",
+  --   branch = "v3.x",
+  --   cmd = "Neotree",
+  --   dependencies = {
+  --     "nvim-lua/plenary.nvim",
+  --     "MunifTanjim/nui.nvim",
+  --   },
+  --   keys = {
+  --     {
+  --       "<leader>fE",
+  --       function()
+  --         local Util = require("rayandrew.util")
+  --         require("neo-tree.command").execute({
+  --           toggle = true,
+  --           dir = Util.get_root(),
+  --         })
+  --       end,
+  --       desc = "Explorer NeoTree (root dir)",
+  --     },
+  --     {
+  --       "<leader>fe",
+  --       function()
+  --         require("neo-tree.command").execute({
+  --           toggle = true,
+  --           dir = vim.loop.cwd(),
+  --         })
+  --       end,
+  --       desc = "Explorer NeoTree (cwd)",
+  --     },
+  --     {
+  --       "<leader>E",
+  --       "<leader>fE",
+  --       desc = "Explorer NeoTree (root dir)",
+  --       remap = true,
+  --     },
+  --     {
+  --       "<leader>e",
+  --       "<leader>fe",
+  --       desc = "Explorer NeoTree (cwd)",
+  --       remap = true,
+  --     },
+  --   },
+  --   deactivate = function()
+  --     vim.cmd([[Neotree close]])
+  --   end,
+  --   init = function()
+  --     -- if vim.fn.argc() == 1 then
+  --     --   local stat = vim.loop.fs_stat(vim.fn.argv(0))
+  --     --   if stat and stat.type == "directory" then
+  --     --     require("neo-tree")
+  --     --   end
+  --     -- end
+  --   end,
+  --   opts = {
+  --     sources = { "filesystem", "buffers", "git_status", "document_symbols" },
+  --     open_files_do_not_replace_types = {
+  --       "terminal",
+  --       "Trouble",
+  --       "qf",
+  --       "Outline",
+  --     },
+  --     filesystem = {
+  --       bind_to_cwd = false,
+  --       follow_current_file = { enabled = true },
+  --       use_libuv_file_watcher = true,
+  --     },
+  --     window = {
+  --       mappings = {
+  --         ["<space>"] = "none",
+  --       },
+  --     },
+  --     default_component_configs = {
+  --       indent = {
+  --         with_expanders = true, -- if nil and file nesting is enabled, will enable expanders
+  --         expander_collapsed = "",
+  --         expander_expanded = "",
+  --         expander_highlight = "NeoTreeExpander",
+  --       },
+  --     },
+  --   },
+  --   config = function(_, opts)
+  --     require("neo-tree").setup(opts)
+  --     vim.api.nvim_create_autocmd("TermClose", {
+  --       pattern = "*lazygit",
+  --       callback = function()
+  --         if package.loaded["neo-tree.sources.git_status"] then
+  --           require("neo-tree.sources.git_status").refresh()
+  --         end
+  --       end,
+  --     })
+  --   end,
+  -- },
 
   -- search/replace in multiple files
   {
@@ -434,42 +460,42 @@ return {
   },
 
   -- buffer line
-  {
-    "akinsho/bufferline.nvim",
-    event = "VeryLazy",
-    keys = {
-      { "<leader>bp", "<Cmd>BufferLineTogglePin<CR>", desc = "Toggle pin" },
-      {
-        "<leader>bP",
-        "<Cmd>BufferLineGroupClose ungrouped<CR>",
-        desc = "Delete non-pinned buffers",
-      },
-    },
-    opts = {
-      options = {
-        -- stylua: ignore
-        close_command = function(n) require("mini.bufremove").delete(n, false) end,
-        -- stylua: ignore
-        right_mouse_command = function(n) require("mini.bufremove").delete(n, false) end,
-        diagnostics = "nvim_lsp",
-        always_show_bufferline = false,
-        diagnostics_indicator = function(_, _, diag)
-          local icons = require("rayandrew.theme").icons.diagnostics
-          local ret = (diag.error and icons.Error .. diag.error .. " " or "")
-            .. (diag.warning and icons.Warn .. diag.warning or "")
-          return vim.trim(ret)
-        end,
-        offsets = {
-          {
-            filetype = "neo-tree",
-            text = "Neo-tree",
-            highlight = "Directory",
-            text_align = "left",
-          },
-        },
-      },
-    },
-  },
+  -- {
+  --   "akinsho/bufferline.nvim",
+  --   event = "VeryLazy",
+  --   keys = {
+  --     { "<leader>bp", "<Cmd>BufferLineTogglePin<CR>", desc = "Toggle pin" },
+  --     {
+  --       "<leader>bP",
+  --       "<Cmd>BufferLineGroupClose ungrouped<CR>",
+  --       desc = "Delete non-pinned buffers",
+  --     },
+  --   },
+  --   opts = {
+  --     options = {
+  --       -- stylua: ignore
+  --       close_command = function(n) require("mini.bufremove").delete(n, false) end,
+  --       -- stylua: ignore
+  --       right_mouse_command = function(n) require("mini.bufremove").delete(n, false) end,
+  --       diagnostics = "nvim_lsp",
+  --       always_show_bufferline = false,
+  --       diagnostics_indicator = function(_, _, diag)
+  --         local icons = require("rayandrew.theme").icons.diagnostics
+  --         local ret = (diag.error and icons.Error .. diag.error .. " " or "")
+  --           .. (diag.warning and icons.Warn .. diag.warning or "")
+  --         return vim.trim(ret)
+  --       end,
+  --       offsets = {
+  --         {
+  --           filetype = "neo-tree",
+  --           text = "Neo-tree",
+  --           highlight = "Directory",
+  --           text_align = "left",
+  --         },
+  --       },
+  --     },
+  --   },
+  -- },
 
   {
     "lukas-reineke/indent-blankline.nvim",
