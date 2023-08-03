@@ -6,10 +6,7 @@ return {
 
   {
     "dstein64/vim-startuptime",
-    -- lazy-load on a command
     cmd = "StartupTime",
-    -- init is called during startup.
-    -- Configuration for vim plugins typically should be set in an init function
     init = function()
       vim.g.startuptime_tries = 10
     end,
@@ -32,7 +29,6 @@ return {
                 local actions = require("telescope.actions")
                 actions.delete_buffer(prompt_bufnr)
                 actions.move_to_top(prompt_bufnr)
-                -- actions.delete_buffer + actions.move_to_top
               end,
             },
             n = {
@@ -43,7 +39,6 @@ return {
       },
     },
     keys = {
-      -- add a keymap to browse plugin files
       {
         "<leader>sp",
         function()
@@ -100,15 +95,6 @@ return {
         end,
         desc = "Find Files with Hidden (cwd)",
       },
-      -- {
-      --   "<c-p>",
-      --   function()
-      --     local Util = require("rayandrew.util")
-      --     local fun = Util.telescope("git_files")
-      --     fun()
-      --   end,
-      --   desc = "Find Git Files",
-      -- },
       {
         "<space>sm",
         function()
@@ -140,9 +126,6 @@ return {
       {
         "nvim-treesitter/nvim-treesitter-textobjects",
         init = function()
-          -- disable rtp plugin, as we only need its queries for mini.ai
-          -- In case other textobject modules are enabled, we will load them
-          -- once nvim-treesitter is loaded
           require("lazy.core.loader").disable_rtp_plugin("nvim-treesitter-textobjects")
           load_textobjects = true
         end,
@@ -283,101 +266,6 @@ return {
     end,
   },
 
-  -- file explorer
-  -- {
-  --   "nvim-neo-tree/neo-tree.nvim",
-  --   branch = "v3.x",
-  --   cmd = "Neotree",
-  --   dependencies = {
-  --     "nvim-lua/plenary.nvim",
-  --     "MunifTanjim/nui.nvim",
-  --   },
-  --   keys = {
-  --     {
-  --       "<leader>fE",
-  --       function()
-  --         local Util = require("rayandrew.util")
-  --         require("neo-tree.command").execute({
-  --           toggle = true,
-  --           dir = Util.get_root(),
-  --         })
-  --       end,
-  --       desc = "Explorer NeoTree (root dir)",
-  --     },
-  --     {
-  --       "<leader>fe",
-  --       function()
-  --         require("neo-tree.command").execute({
-  --           toggle = true,
-  --           dir = vim.loop.cwd(),
-  --         })
-  --       end,
-  --       desc = "Explorer NeoTree (cwd)",
-  --     },
-  --     {
-  --       "<leader>E",
-  --       "<leader>fE",
-  --       desc = "Explorer NeoTree (root dir)",
-  --       remap = true,
-  --     },
-  --     {
-  --       "<leader>e",
-  --       "<leader>fe",
-  --       desc = "Explorer NeoTree (cwd)",
-  --       remap = true,
-  --     },
-  --   },
-  --   deactivate = function()
-  --     vim.cmd([[Neotree close]])
-  --   end,
-  --   init = function()
-  --     -- if vim.fn.argc() == 1 then
-  --     --   local stat = vim.loop.fs_stat(vim.fn.argv(0))
-  --     --   if stat and stat.type == "directory" then
-  --     --     require("neo-tree")
-  --     --   end
-  --     -- end
-  --   end,
-  --   opts = {
-  --     sources = { "filesystem", "buffers", "git_status", "document_symbols" },
-  --     open_files_do_not_replace_types = {
-  --       "terminal",
-  --       "Trouble",
-  --       "qf",
-  --       "Outline",
-  --     },
-  --     filesystem = {
-  --       bind_to_cwd = false,
-  --       follow_current_file = { enabled = true },
-  --       use_libuv_file_watcher = true,
-  --     },
-  --     window = {
-  --       mappings = {
-  --         ["<space>"] = "none",
-  --       },
-  --     },
-  --     default_component_configs = {
-  --       indent = {
-  --         with_expanders = true, -- if nil and file nesting is enabled, will enable expanders
-  --         expander_collapsed = "",
-  --         expander_expanded = "",
-  --         expander_highlight = "NeoTreeExpander",
-  --       },
-  --     },
-  --   },
-  --   config = function(_, opts)
-  --     require("neo-tree").setup(opts)
-  --     vim.api.nvim_create_autocmd("TermClose", {
-  --       pattern = "*lazygit",
-  --       callback = function()
-  --         if package.loaded["neo-tree.sources.git_status"] then
-  --           require("neo-tree.sources.git_status").refresh()
-  --         end
-  --       end,
-  --     })
-  --   end,
-  -- },
-
   -- search/replace in multiple files
   {
     "nvim-pack/nvim-spectre",
@@ -407,7 +295,6 @@ return {
   ------------------------------
   --      User Interface
   ------------------------------
-
   {
     "folke/noice.nvim",
     event = "VeryLazy",
@@ -478,44 +365,6 @@ return {
     end,
   },
 
-  -- buffer line
-  -- {
-  --   "akinsho/bufferline.nvim",
-  --   event = "VeryLazy",
-  --   keys = {
-  --     { "<leader>bp", "<Cmd>BufferLineTogglePin<CR>", desc = "Toggle pin" },
-  --     {
-  --       "<leader>bP",
-  --       "<Cmd>BufferLineGroupClose ungrouped<CR>",
-  --       desc = "Delete non-pinned buffers",
-  --     },
-  --   },
-  --   opts = {
-  --     options = {
-  --       -- stylua: ignore
-  --       close_command = function(n) require("mini.bufremove").delete(n, false) end,
-  --       -- stylua: ignore
-  --       right_mouse_command = function(n) require("mini.bufremove").delete(n, false) end,
-  --       diagnostics = "nvim_lsp",
-  --       always_show_bufferline = false,
-  --       diagnostics_indicator = function(_, _, diag)
-  --         local icons = require("rayandrew.theme").icons.diagnostics
-  --         local ret = (diag.error and icons.Error .. diag.error .. " " or "")
-  --           .. (diag.warning and icons.Warn .. diag.warning or "")
-  --         return vim.trim(ret)
-  --       end,
-  --       offsets = {
-  --         {
-  --           filetype = "neo-tree",
-  --           text = "Neo-tree",
-  --           highlight = "Directory",
-  --           text_align = "left",
-  --         },
-  --       },
-  --     },
-  --   },
-  -- },
-
   {
     "lukas-reineke/indent-blankline.nvim",
     event = { "BufReadPost", "BufNewFile" },
@@ -544,123 +393,6 @@ return {
       show_trailing_blankline_indent = false,
       show_current_context = false,
     },
-  },
-
-  -- statusline
-  {
-    "nvim-lualine/lualine.nvim",
-    event = "VeryLazy",
-    opts = function()
-      local Util = require("rayandrew.util")
-      local icons = require("rayandrew.theme").icons
-
-      return {
-        options = {
-          theme = "auto",
-          globalstatus = true,
-          disabled_filetypes = { statusline = { "dashboard", "alpha" } },
-        },
-        sections = {
-          lualine_a = { "mode" },
-          lualine_b = { "branch" },
-          lualine_c = {
-            {
-              "diagnostics",
-              symbols = {
-                error = icons.diagnostics.Error,
-                warn = icons.diagnostics.Warn,
-                info = icons.diagnostics.Info,
-                hint = icons.diagnostics.Hint,
-              },
-            },
-            {
-              "filetype",
-              icon_only = true,
-              separator = "",
-              padding = { left = 1, right = 0 },
-            },
-            {
-              "filename",
-              path = 1,
-              symbols = { modified = "  ", readonly = "", unnamed = "" },
-            },
-            -- stylua: ignore
-            {
-              function() return require("nvim-navic").get_location() end,
-              cond = function() return package.loaded["nvim-navic"] and require("nvim-navic").is_available() end,
-            },
-          },
-          lualine_x = {
-            -- stylua: ignore
-            {
-              function() return require("noice").api.status.command.get() end,
-              cond = function() return package.loaded["noice"] and require("noice").api.status.command.has() end,
-              color = Util.fg("Statement"),
-            },
-            -- stylua: ignore
-            {
-              function() return require("noice").api.status.mode.get() end,
-              cond = function() return package.loaded["noice"] and require("noice").api.status.mode.has() end,
-              color = Util.fg("Constant"),
-            },
-            -- stylua: ignore
-            {
-              function() return "  " .. require("dap").status() end,
-              cond = function () return package.loaded["dap"] and require("dap").status() ~= "" end,
-              color = Util.fg("Debug"),
-            },
-            {
-              require("lazy.status").updates,
-              cond = require("lazy.status").has_updates,
-              color = Util.fg("Special"),
-            },
-            {
-              "diff",
-              symbols = {
-                added = icons.git.added,
-                modified = icons.git.modified,
-                removed = icons.git.removed,
-              },
-            },
-          },
-          lualine_y = {
-            { "progress", separator = " ", padding = { left = 1, right = 0 } },
-            { "location", padding = { left = 0, right = 1 } },
-          },
-          lualine_z = {
-            function()
-              return " " .. os.date("%R")
-            end,
-          },
-        },
-        extensions = { "neo-tree", "lazy" },
-      }
-    end,
-  },
-
-  -- lsp symbol navigation for lualine. This shows where
-  -- in the code structure you are - within functions, classes,
-  -- etc - in the statusline.
-  {
-    "SmiteshP/nvim-navic",
-    lazy = true,
-    init = function()
-      local Util = require("rayandrew.util")
-      vim.g.navic_silence = true
-      Util.on_attach(function(client, buffer)
-        if client.server_capabilities.documentSymbolProvider then
-          require("nvim-navic").attach(client, buffer)
-        end
-      end)
-    end,
-    opts = function()
-      return {
-        separator = " ",
-        highlight = true,
-        depth_limit = 5,
-        icons = require("rayandrew.theme").icons.kinds,
-      }
-    end,
   },
 
   -- icons
@@ -692,9 +424,6 @@ return {
         "tsserver",
       },
     },
-    -- config = function(_, opts)
-    --   require("mason-lspconfig").setup(opts)
-    -- end,
   },
 
   -- LSP Zero
@@ -706,21 +435,6 @@ return {
       require("lsp-zero.settings").preset("recommended")
     end,
   },
-
-  -- Copilot
-  -- {
-  --   "zbirenbaum/copilot.lua",
-  --   cmd = "Copilot",
-  --   build = ":Copilot auth",
-  --   opts = {
-  --     suggestion = { enabled = false },
-  --     panel = { enabled = false },
-  --     filetypes = {
-  --       markdown = true,
-  --       help = true,
-  --     },
-  --   },
-  -- },
 
   -- Autocompletion
   {
@@ -735,24 +449,6 @@ return {
       { "saadparwaiz1/cmp_luasnip" },
       { "hrsh7th/cmp-nvim-lsp" },
       { "hrsh7th/cmp-nvim-lua" },
-      -- {
-      --   "zbirenbaum/copilot-cmp",
-      --   dependencies = "copilot.lua",
-      --   enabled = false,
-      --   opts = {},
-      --   config = function(_, opts)
-      --     local Util = require("rayandrew.util")
-      --     local copilot_cmp = require("copilot_cmp")
-      --     copilot_cmp.setup(opts)
-      --     -- attach cmp source whenever copilot attaches
-      --     -- fixes lazy-loading issues with the copilot cmp source
-      --     Util.on_attach(function(client)
-      --       if client.name == "copilot" then
-      --         copilot_cmp._on_insert_enter({})
-      --       end
-      --     end)
-      --   end,
-      -- },
     },
     config = function()
       require("lsp-zero.cmp").extend()
@@ -764,7 +460,6 @@ return {
 
       cmp.setup({
         sources = {
-          -- { name = "copilot", group_index = 2 },
           { name = "nvim_lsp", group_index = 2 },
           { name = "path", group_index = 2 },
           { name = "luasnip", group_index = 2 },
@@ -778,11 +473,7 @@ return {
           ["<C-y>"] = cmp.mapping.confirm({ select = true }),
           ["<Tab>"] = nil,
           ["<S-Tab>"] = nil,
-          -- ["<Tab>"] = cmp_action.luasnip_supertab(),
-          -- ["<S-Tab>"] = cmp_action.luasnip_supertab(),
           ["<CR>"] = cmp.mapping.confirm({
-            -- documentation says this is important.
-            -- I don't know why.
             behavior = cmp.ConfirmBehavior.Replace,
             select = false,
           }),
@@ -806,6 +497,9 @@ return {
       { "hrsh7th/cmp-nvim-lsp" },
       { "williamboman/mason-lspconfig.nvim" },
       { "williamboman/mason.nvim" },
+
+      { "folke/neoconf.nvim", cmd = "Neoconf", config = false, dependencies = { "nvim-lspconfig" } },
+      { "folke/neodev.nvim", opts = {} },
     },
     config = function()
       local lsp = require("lsp-zero")
@@ -848,7 +542,15 @@ return {
       end)
 
       -- (Optional) Configure lua language server for neovim
-      require("lspconfig").lua_ls.setup(lsp.nvim_lua_ls())
+      require("lspconfig").lua_ls.setup(lsp.nvim_lua_ls({
+        settings = {
+          Lua = {
+            completion = {
+              callSnippet = "Replace",
+            },
+          },
+        },
+      }))
 
       lsp.set_preferences({
         suggest_lsp_servers = false,
@@ -892,14 +594,6 @@ return {
       local nls = require("null-ls")
 
       return {
-        -- sources = {
-        -- 	nls.builtins.formatting.fish_indent,
-        -- 	nls.builtins.diagnostics.fish,
-        -- 	nls.builtins.formatting.stylua,
-        -- 	nls.builtins.formatting.shfmt,
-        -- 	-- nls.builtins.diagnostics.flake8,
-        -- },
-
         ensure_installed = {
           "taplo",
 
@@ -918,14 +612,8 @@ return {
 
           "latexindent",
         },
-        automatic_installation = false, -- You can still set this to `true`
+        automatic_installation = false,
         handlers = {},
-        -- handlers = {
-        -- function() end, -- disables automatic setup of all null-ls sources
-        --   stylua = function(source_name, methods)
-        --     nls.register(nls.builtins.formatting.stylua)
-        --   end,
-        -- },
       }
     end,
     config = function(_, opts)
@@ -1129,10 +817,12 @@ return {
       { "<C-h>", "<BS>", mode = "!" }, -- backward-delete-char
     },
   },
+
   {
     "tpope/vim-fugitive",
     cmd = { "Git" },
   },
+
   {
     "laytan/cloak.nvim",
     event = {
@@ -1154,9 +844,6 @@ return {
             ".env*",
             ".dev.vars",
           },
-          -- Match an equals sign and any character after it.
-          -- This can also be a table of patterns to cloak,
-          -- example: cloak_pattern = { ":.+", "-.+" } for yaml files.
           cloak_pattern = "=.+",
         },
       },
@@ -1165,6 +852,7 @@ return {
       require("cloak").setup(opts)
     end,
   },
+
   {
     "theprimeagen/harpoon",
     event = "VeryLazy",
@@ -1200,23 +888,50 @@ return {
           ui.nav_file(2)
         end,
       },
+      {
+        "<leader>h3",
+        function()
+          local ui = require("harpoon.ui")
+          ui.nav_file(3)
+        end,
+      },
+      {
+        "<leader>h4",
+        function()
+          local ui = require("harpoon.ui")
+          ui.nav_file(4)
+        end,
+      },
+      {
+        "<leader>h5",
+        function()
+          local ui = require("harpoon.ui")
+          ui.nav_file(5)
+        end,
+      },
     },
   },
+
   {
     "theprimeagen/refactoring.nvim",
   },
+
   {
     "github/copilot.vim",
   },
+
   {
     "eandrju/cellular-automaton.nvim",
   },
+
   {
     "laytan/cloak.nvim",
   },
+
   {
     "mbbill/undotree",
   },
+
   {
     "skywind3000/asyncrun.vim",
     cmd = { "AsyncRun", "AsyncStop" },
@@ -1254,6 +969,7 @@ return {
       { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
     },
   },
+
   {
     "folke/trouble.nvim",
     cmd = { "TroubleToggle", "Trouble" },
@@ -1309,6 +1025,7 @@ return {
       },
     },
   },
+
   {
     "folke/todo-comments.nvim",
     cmd = { "TodoTrouble", "TodoTelescope" },
@@ -1324,6 +1041,7 @@ return {
       { "<leader>sT", "<cmd>TodoTelescope keywords=TODO,FIX,FIXME<cr>", desc = "Todo/Fix/Fixme" },
     },
   },
+
   {
     "folke/which-key.nvim",
     event = "VeryLazy",
@@ -1367,7 +1085,7 @@ return {
           enabled = true,
         },
       },
-      on_open = function(_win)
+      on_open = function()
         vim.wo.wrap = false
         vim.wo.number = false
         vim.wo.rnu = false
@@ -1382,12 +1100,6 @@ return {
       {
         "<leader>z",
         function()
-          -- require("zen-mode").setup({
-          --   window = {
-          --     width = 90,
-          --     options = {},
-          --   },
-          -- })
           require("zen-mode").toggle()
           require("rayandrew.theme").recolor()
         end,
@@ -1435,39 +1147,4 @@ return {
     },
     keys = { "<C-h>", "<C-j>", "<C-k>", "<C-l>" },
   },
-
-  -- Copilot Lualine
-  -- {
-  --   "nvim-lualine/lualine.nvim",
-  --   -- optional = true,
-  --   event = "VeryLazy",
-  --   opts = function(_, opts)
-  --     local Util = require("rayandrew.util")
-  --     local colors = {
-  --       [""] = Util.fg("Special"),
-  --       ["Normal"] = Util.fg("Special"),
-  --       ["Warning"] = Util.fg("DiagnosticError"),
-  --       ["InProgress"] = Util.fg("DiagnosticWarn"),
-  --     }
-  --     table.insert(opts.sections.lualine_x, 2, {
-  --       function()
-  --         local icon = require("rayandrew.themes").icons.kinds.Copilot
-  --         local status = require("copilot.api").status.data
-  --         return icon .. (status.message or "")
-  --       end,
-  --       cond = function()
-  --         local ok, clients =
-  --           pcall(vim.lsp.get_active_clients, { name = "copilot", bufnr = 0 })
-  --         return ok and #clients > 0
-  --       end,
-  --       color = function()
-  --         if not package.loaded["copilot"] then
-  --           return
-  --         end
-  --         local status = require("copilot.api").status.data
-  --         return colors[status.status] or colors[""]
-  --       end,
-  --     })
-  --   end,
-  -- },
 }
