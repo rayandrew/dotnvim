@@ -395,6 +395,8 @@ return {
     },
   },
 
+  { "kevinhwang91/nvim-bqf", ft = "qf" },
+
   -- icons
   { "nvim-tree/nvim-web-devicons", lazy = true },
 
@@ -551,6 +553,13 @@ return {
           },
         },
       }))
+
+      require("lspconfig").clangd.setup({
+        cmd = {
+          "clangd",
+          "--offset-encoding=utf-16",
+        },
+      })
 
       lsp.set_preferences({
         suggest_lsp_servers = false,
