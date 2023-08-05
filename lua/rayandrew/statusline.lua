@@ -89,8 +89,7 @@ function M.setup()
     group = augroup("statusline"),
     pattern = "*",
     callback = function()
-      -- vim.opt_local.statusline = "%!v:lua.require('rayandrew.util').statusline()"
-      vim.opt_local.statusline = M.render()
+      vim.opt_local.statusline = "%!v:lua.require('rayandrew.statusline').render()"
     end,
     -- command = [[lua require("rayandrew.util").render()]],
   })
