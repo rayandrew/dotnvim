@@ -1,9 +1,7 @@
 -- Taken from
 -- https://github.com/LazyVim/LazyVim/blob/566049aa4a26a86219dd1ad1624f9a1bf18831b6/lua/lazyvim/config/autocmds.lua
 
-local function augroup(name)
-  return vim.api.nvim_create_augroup("lazyvim_" .. name, { clear = true })
-end
+local augroup = require("rayandrew.util").augroup
 
 local autocmd = vim.api.nvim_create_autocmd
 
