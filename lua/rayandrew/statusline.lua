@@ -1,3 +1,6 @@
+-- credit goes to
+-- https://nuxsh.is-a.dev/blog/custom-nvim-statusline.html
+
 local M = {}
 
 local modes = {
@@ -64,7 +67,7 @@ local function filename()
   return fname .. " "
 end
 
-function M.render()
+function M.render_active()
   local parts = {
     "%#Statusline#",
     update_mode_colors(),
@@ -80,18 +83,49 @@ function M.render()
   return statusline
 end
 
+function M.render_inactive()
+  local parts = {
+    "%#Statusline#",
+    "%#Normal# ",
+    "%=%#StatusLineExtra#",
+  }
+  local statusline = table.concat(parts, "")
+  return statusline
+end
+
+-- function M.render(opts)
+--   opts = opts or {}
+--   local active = opts.active or false
+--   local statusline = ""
+--   if active then
+--     statusline = M.render_active()
+--   else
+--     statusline = M.render_inactive()
+--   end
+--   vim.opt_local.statusline = statusline
+-- end
+
 function M.setup()
   local augroup = require("rayandrew.util").augroup
   local autocmd = vim.api.nvim_create_autocmd
 
   -- Statusline
   autocmd({ "BufEnter", "BufWinEnter", "WinEnter" }, {
-    group = augroup("statusline"),
+    group = augroup("statusline-enter"),
     pattern = "*",
     callback = function()
-      vim.opt_local.statusline = "%!v:lua.require('rayandrew.statusline').render()"
+      vim.opt_local.statusline = "%!v:lua.require('rayandrew.statusline').render_active()"
     end,
-    -- command = [[lua require("rayandrew.util").render()]],
+    -- command = [[lua require("rayandrew.statusline").render({ active = true })]],
+  })
+
+  autocmd({ "BufLeave", "BufWinLeave", "WinLeave" }, {
+    group = augroup("statusline-leave"),
+    pattern = "*",
+    callback = function()
+      vim.opt_local.statusline = "%!v:lua.require('rayandrew.statusline').render_inactive()"
+    end,
+    -- command = [[lua require("rayandrew.statusline").render({ active = false })]],
   })
 end
 
