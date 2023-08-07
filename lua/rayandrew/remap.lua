@@ -35,10 +35,10 @@ Util.map("n", "<leader>ws", "<cmd>split<cr>", { desc = "[W]indow Horizontal [S]p
 Util.map("n", "<leader>wv", "<cmd>vsplit<cr>", { desc = "[W]indow [V]ertical Split" }) -- split vertical
 
 -- move
-Util.map("n", "<leader>wh", "<cmd>TmuxNavigateLeft<cr>", { desc = "Go to Left [W]indow" })
-Util.map("n", "<leader>wj", "<cmd>TmuxNavigateDown<cr>", { desc = "Go to [W]indow Below" })
-Util.map("n", "<leader>wk", "<cmd>TmuxNavigateUp<cr>", { desc = "Go to Top [W]indow" })
-Util.map("n", "<leader>wl", "<cmd>TmuxNavigateRight<cr>", { desc = "Go to Right [W]indow" })
+-- Util.map("n", "<leader>wh", "<cmd>TmuxNavigateLeft<cr>", { desc = "Go to Left [W]indow" })
+-- Util.map("n", "<leader>wj", "<cmd>TmuxNavigateDown<cr>", { desc = "Go to [W]indow Below" })
+-- Util.map("n", "<leader>wk", "<cmd>TmuxNavigateUp<cr>", { desc = "Go to Top [W]indow" })
+-- Util.map("n", "<leader>wl", "<cmd>TmuxNavigateRight<cr>", { desc = "Go to Right [W]indow" })
 
 if Util.has("bufferline.nvim") then
   Util.map("n", "<S-h>", "<cmd>BufferLineCyclePrev<cr>", { desc = "Prev buffer" })
@@ -51,6 +51,45 @@ else
   Util.map("n", "[b", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
   Util.map("n", "]b", "<cmd>bnext<cr>", { desc = "Next buffer" })
 end
+
+Util.map("n", "<leader>wh", function()
+  require("smart-splits").resize_left()
+end, { desc = "Window Resize Left" })
+Util.map("n", "<leader>wj", function()
+  require("smart-splits").resize_down()
+end, { desc = "Window Resize Down" })
+Util.map("n", "<leader>wk", function()
+  require("smart-splits").resize_up()
+end, { desc = "Window Resize Up" })
+Util.map("n", "<leader>wl", function()
+  require("smart-splits").resize_right()
+end, { desc = "Window Resize Right" })
+-- moving between splits
+Util.map("n", "<C-h>", function()
+  require("smart-splits").move_cursor_left()
+end, { desc = "Focus to Left Window" })
+Util.map("n", "<C-j>", function()
+  require("smart-splits").move_cursor_down()
+end, { desc = "Focus to Lower Window" })
+Util.map("n", "<C-k>", function()
+  require("smart-splits").move_cursor_up()
+end, { desc = "Focus to Upper Window" })
+Util.map("n", "<C-l>", function()
+  require("smart-splits").move_cursor_right()
+end, { desc = "Focus to Right Window" })
+-- swapping buffers between windows
+Util.map("n", "<leader><leader>h", function()
+  require("smart-splits").swap_buf_left()
+end, { desc = "Swap Buffer Left" })
+Util.map("n", "<leader><leader>j", function()
+  require("smart-splits").swap_buf_down()
+end, { desc = "Swap Buffer Down" })
+Util.map("n", "<leader><leader>k", function()
+  require("smart-splits").swap_buf_up()
+end, { desc = "Swap Buffer Up" })
+Util.map("n", "<leader><leader>l", function()
+  require("smart-splits").swap_buf_right()
+end, { desc = "Swap Buffer Right" })
 
 -- tabs
 Util.map("n", "<leader><tab>l", "<cmd>tablast<cr>", { desc = "Last Tab" })
@@ -114,15 +153,10 @@ Util.map("n", "<leader>tT", function()
   Util.float_term()
 end, { desc = "Terminal (cwd)" })
 Util.map("n", "`", lazyterm, { desc = "Terminal (root dir)" })
--- Util.map("n", "<c-`>", lazyterm, { desc = "Terminal (root dir)" })
 Util.map("n", "<c-/>", lazyterm, { desc = "Terminal (root dir)" })
 Util.map("n", "<c-_>", lazyterm, { desc = "which_key_ignore" })
 
 Util.map("t", "<esc><esc>", "<c-\\><c-n>", { desc = "Enter Normal Mode" })
--- Util.map("t", "<C-h>", "<cmd>wincmd h<cr>", { desc = "Go to left window" })
--- Util.map("t", "<C-j>", "<cmd>wincmd j<cr>", { desc = "Go to lower window" })
--- Util.map("t", "<C-k>", "<cmd>wincmd k<cr>", { desc = "Go to upper window" })
--- Util.map("t", "<C-l>", "<cmd>wincmd l<cr>", { desc = "Go to right window" })
 Util.map("t", "<C-/>", "<cmd>close<cr>", { desc = "Hide Terminal" })
 Util.map("t", "<c-_>", "<cmd>close<cr>", { desc = "which_key_ignore" })
 
@@ -130,10 +164,18 @@ Util.map("t", "<c-_>", "<cmd>close<cr>", { desc = "which_key_ignore" })
 --        Others
 ------------------------------
 
+-- ufo
+Util.map("n", "zR", function()
+  require("ufo").openAllFolds()
+end)
+Util.map("n", "zM", function()
+  require("ufo").closeAllFolds()
+end)
+
 -- lazy
 Util.map("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy" })
 
 -- source file
-Util.map("n", "<leader><leader>", function()
+Util.map("n", "<leader><leader>s", function()
   vim.cmd("so")
-end)
+end, { desc = "Source File" })

@@ -18,7 +18,18 @@ return {
   {
     "nvim-telescope/telescope.nvim",
     cmd = "Telescope",
-    dependencies = { "nvim-lua/plenary.nvim" },
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      {
+        "nvim-telescope/telescope-fzf-native.nvim",
+        -- NOTE: If you are having trouble with this installation,
+        --       refer to the README for telescope-fzf-native for more instructions.
+        build = "make",
+        cond = function()
+          return vim.fn.executable("make") == 1
+        end,
+      },
+    },
     version = false,
     opts = {
       pickers = {
@@ -30,6 +41,7 @@ return {
                 actions.delete_buffer(prompt_bufnr)
                 actions.move_to_top(prompt_bufnr)
               end,
+              ["<c-u>"] = false,
             },
             n = {
               ["d"] = "delete_buffer",
@@ -113,6 +125,29 @@ return {
         end,
         desc = "Find Help Tags",
       },
+      {
+        "<space>/",
+        function()
+          -- require("telescope.builtin").current_buffer_fuzzy_find(require("telescope.themes").get_dropdown({
+          --   winblend = 10,
+          --   previewer = false,
+          -- }))
+          local Util = require("rayandrew.util")
+          local fun = Util.telescope("current_buffer_fuzzy_find", {
+            winblend = 10,
+            previewer = false,
+          })
+          fun()
+        end,
+      },
+      {
+        "<space>sd",
+        function()
+          local Util = require("rayandrew.util")
+          local fun = Util.telescope("diagnostics")
+          fun()
+        end,
+      },
     },
   },
 
@@ -163,6 +198,49 @@ return {
           node_incremental = "<C-space>",
           scope_incremental = false,
           node_decremental = "<bs>",
+        },
+      },
+      textobjects = {
+        select = {
+          enable = true,
+          lookahead = true,
+          keymaps = {
+            ["aa"] = "@parameter.outer",
+            ["ia"] = "@parameter.inner",
+            ["af"] = "@function.outer",
+            ["if"] = "@function.inner",
+            ["ac"] = "@class.outer",
+            ["ic"] = "@class.inner",
+          },
+        },
+        move = {
+          enable = true,
+          set_jumps = true,
+          goto_next_start = {
+            ["]m"] = "@function.outer",
+            ["]]"] = "@class.outer",
+          },
+          goto_next_end = {
+            ["]M"] = "@function.outer",
+            ["]["] = "@class.outer",
+          },
+          goto_previous_start = {
+            ["[m"] = "@function.outer",
+            ["[["] = "@class.outer",
+          },
+          goto_previous_end = {
+            ["[M"] = "@function.outer",
+            ["[]"] = "@class.outer",
+          },
+        },
+        swap = {
+          enable = true,
+          swap_next = {
+            ["<leader>a"] = "@parameter.inner",
+          },
+          swap_previous = {
+            ["<leader>A"] = "@parameter.inner",
+          },
         },
       },
     },
@@ -226,18 +304,13 @@ return {
     dependencies = { "nvim-tree/nvim-web-devicons" },
     cmd = { "Oil" },
     keys = {
-      -- {
-      --   "-",
-      --   function()
-      --     require("oil").open()
-      --   end,
-      --   desc = "Open parent directory",
-      -- },
       {
         "<leader>e",
         function()
-          -- split window then open oil
-          -- vim.cmd.vsplit()
+          -- disable in oil filetype
+          if vim.bo.filetype == "oil" then
+            return
+          end
           require("oil").open()
         end,
         desc = "Open current directory",
@@ -245,8 +318,10 @@ return {
       {
         "<leader>E",
         function()
-          -- split window then open oil
-          -- vim.cmd.vsplit()
+          -- disable in oil filetype
+          if vim.bo.filetype == "oil" then
+            return
+          end
           require("oil").open(".")
         end,
         desc = "Open current directory",
@@ -295,75 +370,6 @@ return {
   ------------------------------
   --      User Interface
   ------------------------------
-  -- {
-  --   "folke/noice.nvim",
-  --   event = "VeryLazy",
-  --   opts = {
-  --     lsp = {
-  --       override = {
-  --         ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-  --         ["vim.lsp.util.stylize_markdown"] = true,
-  --         ["cmp.entry.get_documentation"] = true,
-  --       },
-  --       hover = {
-  --         enabled = false,
-  --       },
-  --       signature = {
-  --         enabled = false,
-  --       },
-  --     },
-  --     cmdline = {
-  --       enabled = true,
-  --       view = "cmdline",
-  --     },
-  --     routes = {
-  --       {
-  --         filter = {
-  --           event = "msg_show",
-  --           any = {
-  --             { find = "%d+L, %d+B" },
-  --             { find = "; after #%d+" },
-  --             { find = "; before #%d+" },
-  --           },
-  --         },
-  --         view = "mini",
-  --       },
-  --     },
-  --     presets = {
-  --       bottom_search = true,
-  --       command_palette = true,
-  --       long_message_to_split = true,
-  --       inc_rename = true,
-  --     },
-  --   },
-  --   -- stylua: ignore
-  --   keys = {
-  --     { "<S-Enter>", function() require("noice").redirect(vim.fn.getcmdline()) end, mode = "c", desc = "Redirect Cmdline" },
-  --     { "<leader>snl", function() require("noice").cmd("last") end, desc = "Noice Last Message" },
-  --     { "<leader>snh", function() require("noice").cmd("history") end, desc = "Noice History" },
-  --     { "<leader>sna", function() require("noice").cmd("all") end, desc = "Noice All" },
-  --     { "<leader>snd", function() require("noice").cmd("dismiss") end, desc = "Dismiss All" },
-  --     { "<c-f>", function() if not require("noice.lsp").scroll(4) then return "<c-f>" end end, silent = true, expr = true, desc = "Scroll forward", mode = {"i", "n", "s"} },
-  --     { "<c-b>", function() if not require("noice.lsp").scroll(-4) then return "<c-b>" end end, silent = true, expr = true, desc = "Scroll backward", mode = {"i", "n", "s"}},
-  --   },
-  -- },
-
-  -- {
-  --   "stevearc/dressing.nvim",
-  --   lazy = true,
-  --   init = function()
-  --     ---@diagnostic disable-next-line: duplicate-set-field
-  --     vim.ui.select = function(...)
-  --       require("lazy").load({ plugins = { "dressing.nvim" } })
-  --       return vim.ui.select(...)
-  --     end
-  --     ---@diagnostic disable-next-line: duplicate-set-field
-  --     vim.ui.input = function(...)
-  --       require("lazy").load({ plugins = { "dressing.nvim" } })
-  --       return vim.ui.input(...)
-  --     end
-  --   end,
-  -- },
 
   {
     "lukas-reineke/indent-blankline.nvim",
@@ -399,9 +405,6 @@ return {
 
   -- icons
   { "nvim-tree/nvim-web-devicons", lazy = true },
-
-  -- ui components
-  { "MunifTanjim/nui.nvim", lazy = true },
 
   ------------------------------
   --     LSP Configuration
@@ -443,7 +446,16 @@ return {
     "hrsh7th/nvim-cmp",
     event = "InsertEnter",
     dependencies = {
-      { "L3MON4D3/LuaSnip", build = "make install_jsregexp" },
+      {
+        "L3MON4D3/LuaSnip",
+        build = "make install_jsregexp",
+        -- event = "InsertEnter",
+        config = function()
+          local luasnip = require("luasnip")
+          require("luasnip.loaders.from_vscode").lazy_load()
+          luasnip.config.setup({})
+        end,
+      },
       { "rafamadriz/friendly-snippets" },
       { "hrsh7th/nvim-cmp" },
       { "hrsh7th/cmp-buffer" },
@@ -483,7 +495,8 @@ return {
         sorting,
         snippet = {
           expand = function(args)
-            require("luasnip").lsp_expand(args.body)
+            local luasnip = require("luasnip")
+            luasnip.lsp_expand(args.body)
           end,
         },
       })
@@ -499,9 +512,13 @@ return {
       { "hrsh7th/cmp-nvim-lsp" },
       { "williamboman/mason-lspconfig.nvim" },
       { "williamboman/mason.nvim" },
-
       { "folke/neoconf.nvim", cmd = "Neoconf", config = false, dependencies = { "nvim-lspconfig" } },
       { "folke/neodev.nvim", opts = {} },
+      {
+        "kevinhwang91/nvim-ufo",
+        dependencies = { "kevinhwang91/promise-async" },
+        opts = {},
+      },
     },
     config = function()
       local lsp = require("lsp-zero")
@@ -578,6 +595,17 @@ return {
         },
         servers = {
           ["null-ls"] = { "javascript", "typescript", "lua", "python" },
+        },
+      })
+
+      lsp.set_server_config({
+        capabilities = {
+          textDocument = {
+            foldingRange = {
+              dynamicRegistration = false,
+              lineFoldingOnly = true,
+            },
+          },
         },
       })
 
@@ -694,6 +722,37 @@ return {
   ------------------------------
   --      Utilities
   ------------------------------
+
+  {
+    "nvim-focus/focus.nvim",
+    version = "*",
+    opts = {},
+    cmd = { "FocusToggle", "FocusSplitNicely", "FocusSplitCycle", "FocusSplitCycleReverse" },
+    keys = {
+      {
+        "<space>wf",
+        "<cmd>FocusToggle<CR>",
+        desc = "Toggle Focus",
+      },
+    },
+  },
+
+  {
+    "simrat39/symbols-outline.nvim",
+    opts = {},
+    cmd = { "SymbolsOutline", "SymbolsOutlineOpen", "SymbolsOutlineClose" },
+    keys = {
+      { "<leader>so", "<cmd>SymbolsOutline<CR>", desc = "Symbols Outline" },
+    },
+  },
+
+  {
+    "kylechui/nvim-surround",
+    version = "*",
+    event = "VeryLazy",
+    opts = {},
+  },
+
   {
     "RRethy/vim-illuminate",
     event = { "BufReadPost", "BufNewFile" },
@@ -1087,7 +1146,7 @@ return {
     "folke/zen-mode.nvim",
     opts = {
       window = {
-        width = 90,
+        width = 100,
       },
       plugins = {
         tmux = {
@@ -1098,11 +1157,13 @@ return {
         vim.wo.wrap = false
         vim.wo.number = false
         vim.wo.rnu = false
+        vim.wo.signcolumn = "no"
       end,
       on_close = function()
         vim.wo.wrap = true
         vim.wo.number = true
         vim.wo.rnu = true
+        vim.wo.signcolumn = "yes"
       end,
     },
     keys = {
@@ -1147,13 +1208,21 @@ return {
 
   -- Tmux
   {
-    "christoomey/vim-tmux-navigator",
-    cmd = {
-      "TmuxNavigateLeft",
-      "TmuxNavigateDown",
-      "TmuxNavigateUp",
-      "TmuxNavigateRight",
+    "mrjones2014/smart-splits.nvim",
+    dependencies = {
+      {
+        "kwkarlwang/bufresize.nvim",
+        opts = {},
+      },
     },
-    keys = { "<C-h>", "<C-j>", "<C-k>", "<C-l>" },
+    config = function()
+      require("smart-splits").setup({
+        resize_mode = {
+          hooks = {
+            on_leave = require("bufresize").register,
+          },
+        },
+      })
+    end,
   },
 }
