@@ -1209,6 +1209,8 @@ return {
   -- Tmux
   {
     "mrjones2014/smart-splits.nvim",
+    lazy = true,
+    -- event = "VeryLazy",
     dependencies = {
       {
         "kwkarlwang/bufresize.nvim",
