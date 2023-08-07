@@ -1225,4 +1225,15 @@ return {
       })
     end,
   },
+
+  {
+    "christoomey/vim-tmux-navigator",
+    cmd = {
+      "TmuxNavigateLeft",
+      "TmuxNavigateDown",
+      "TmuxNavigateUp",
+      "TmuxNavigateRight",
+    },
+    keys = { "<C-h>", "<C-j>", "<C-k>", "<C-l>" },
+  },
 }
