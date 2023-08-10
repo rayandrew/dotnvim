@@ -6,7 +6,7 @@ local Util = require("rayandrew.util")
 
 Util.map("n", "<leader>fs", "<cmd>w<cr><esc>", { desc = "Save file" })
 
-Util.map({ "i", "v", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save file" })
+-- Util.map({ "i", "v", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save file" })
 
 -- Move Lines
 Util.map("n", "<C-j>", "<cmd>m .+1<cr>==", { desc = "Move down" })

@@ -55,8 +55,8 @@ return {
         "<leader>sp",
         function()
           local Util = require("rayandrew.util")
-          local fun = Util.telescope("live_grep")
-          fun()
+          local fn = Util.telescope("live_grep")
+          fn()
         end,
         desc = "Find in Files (Grep)",
       },
@@ -64,10 +64,10 @@ return {
         "<leader>ps",
         function()
           local Util = require("rayandrew.util")
-          local fun = Util.telescope("grep_string", {
+          local fn = Util.telescope("grep_string", {
             search = vim.fn.input("Grep > "),
           })
-          fun()
+          fn()
         end,
         desc = "Find in Files (Grep)",
       },
@@ -75,17 +75,18 @@ return {
         "<leader>bb",
         function()
           local Util = require("rayandrew.util")
-          local fun = Util.telescope("buffers")
-          fun()
+          local fn = Util.telescope("buffers")
+          fn()
         end,
         desc = "List all opened buffers",
       },
       {
         "<leader>fF",
         function()
+          local utils = require("telescope.utils")
           local Util = require("rayandrew.util")
-          local fun = Util.telescope("files")
-          fun()
+          local fn = Util.telescope("files", { cwd = utils.buffer_dir() })
+          fn()
         end,
         desc = "Find Files (root dir)",
       },
@@ -93,8 +94,8 @@ return {
         "<leader>ff",
         function()
           local Util = require("rayandrew.util")
-          local fun = Util.telescope("files", { cwd = false })
-          fun()
+          local fn = Util.telescope("files", { cwd = false })
+          fn()
         end,
         desc = "Find Files (cwd)",
       },
@@ -102,8 +103,8 @@ return {
         "<leader>fh",
         function()
           local Util = require("rayandrew.util")
-          local fun = Util.telescope("files", { cwd = false, hidden = true })
-          fun()
+          local fn = Util.telescope("files", { cwd = false, hidden = true })
+          fn()
         end,
         desc = "Find Files with Hidden (cwd)",
       },
@@ -111,8 +112,8 @@ return {
         "<space>sm",
         function()
           local Util = require("rayandrew.util")
-          local fun = Util.telescope("man_pages")
-          fun()
+          local fn = Util.telescope("man_pages")
+          fn()
         end,
         desc = "Find Manual",
       },
@@ -133,19 +134,19 @@ return {
           --   previewer = false,
           -- }))
           local Util = require("rayandrew.util")
-          local fun = Util.telescope("current_buffer_fuzzy_find", {
+          local fn = Util.telescope("current_buffer_fuzzy_find", {
             winblend = 10,
             previewer = false,
           })
-          fun()
+          fn()
         end,
       },
       {
         "<space>sd",
         function()
           local Util = require("rayandrew.util")
-          local fun = Util.telescope("diagnostics")
-          fun()
+          local fn = Util.telescope("diagnostics")
+          fn()
         end,
       },
     },
@@ -175,6 +176,7 @@ return {
         "html",
         "javascript",
         "json",
+        "latex",
         "lua",
         "luadoc",
         "luap",
@@ -474,6 +476,7 @@ return {
 
       cmp.setup({
         sources = {
+          { name = "neorg", group_index = 2 },
           { name = "nvim_lsp", group_index = 2 },
           { name = "path", group_index = 2 },
           { name = "luasnip", group_index = 2 },
@@ -594,7 +597,7 @@ return {
           timeout_ms = 10000,
         },
         servers = {
-          ["null-ls"] = { "javascript", "typescript", "lua", "python" },
+          ["null-ls"] = { "javascript", "typescript", "lua", "python", "nix" },
         },
       })
 
@@ -1126,6 +1129,7 @@ return {
         ["<leader>c"] = { name = "+code" },
         ["<leader>f"] = { name = "+file/find" },
         ["<leader>g"] = { name = "+git" },
+        ["<leader>n"] = { name = "+note" },
         ["<leader>gh"] = { name = "+hunks" },
         ["<leader>q"] = { name = "+quit/session" },
         ["<leader>s"] = { name = "+search" },
@@ -1237,5 +1241,181 @@ return {
       "TmuxNavigateRight",
     },
     keys = { "<C-h>", "<C-j>", "<C-k>", "<C-l>" },
+  },
+
+  ------------------------------
+  --        Note Taking
+  ------------------------------
+
+  {
+    "nvim-neorg/neorg",
+    build = ":Neorg sync-parsers",
+    dependencies = {
+      { "nvim-lua/plenary.nvim" },
+      { "nvim-neorg/neorg-telescope" },
+    },
+    cond = function()
+      return vim.fn.isdirectory(vim.fn.expand("~/Notes")) == 1
+    end,
+    event = "VeryLazy",
+    cmd = { "Neorg" },
+    keys = {
+      {
+        "<leader>na",
+        function()
+          local Util = require("rayandrew.util")
+          local fn = Util.telescope("files", {
+            prompt_title = "Neorg",
+            cwd = "~/Notes",
+          })
+          fn()
+        end,
+        desc = "Find Notes",
+      },
+      {
+        "<leader>fn",
+        function()
+          vim.cmd("Telescope neorg find_norg_files")
+        end,
+        desc = "Find Notes",
+      },
+      {
+        "<leader>nf",
+        "<leader>fn",
+        desc = "Find Notes",
+        remap = true,
+      },
+      {
+        "<leader>sn",
+        function()
+          local Util = require("rayandrew.util")
+          local fn = Util.telescope("live_grep", {
+            prompt_title = "Neorg Grep",
+            cwd = "~/Notes",
+          })
+          fn()
+        end,
+        desc = "Search Notes",
+      },
+    },
+    opts = {
+      load = {
+        ["core.defaults"] = {},
+        ["core.concealer"] = {},
+        ["core.dirman"] = {
+          config = {
+            workspaces = {
+              notes = "~/Notes",
+            },
+            default_workspace = "notes",
+          },
+        },
+        ["core.completion"] = {
+          config = {
+            engine = "nvim-cmp",
+          },
+        },
+        ["core.clipboard"] = {},
+        ["core.clipboard.code-blocks"] = {},
+        ["core.integrations.telescope"] = {},
+      },
+    },
+    config = function(_, opts)
+      require("neorg").setup(opts)
+      local neorg_callbacks = require("neorg.core.callbacks")
+
+      neorg_callbacks.on_event("core.keybinds.events.enable_keybinds", function(_, keybinds)
+        keybinds.map_event_to_mode("norg", {
+          n = {
+            { "<c-f>", "core.integrations.telescope.find_linkable" },
+            { "<c-o>", "core.integrations.telescope.insert_link" },
+            { "<c-s>", "core.integrations.telescope.search_headings" },
+            { "<c-p>", "core.integrations.telescope.insert_file_link" },
+          },
+
+          i = {},
+        }, {
+          silent = true,
+          noremap = true,
+        })
+      end)
+    end,
+  },
+
+  {
+    "jbyuki/venn.nvim",
+    keys = {
+      {
+        "<leader>nv",
+        function()
+          function Toggle_venn()
+            local venn_enabled = vim.inspect(vim.b.venn_enabled)
+            if venn_enabled == "nil" then
+              vim.b.venn_enabled = true
+              vim.cmd([[setlocal ve=all]])
+              -- draw a line on HJKL keystokes
+              vim.api.nvim_buf_set_keymap(0, "n", "J", "<C-v>j:VBox<CR>", { noremap = true })
+              vim.api.nvim_buf_set_keymap(0, "n", "K", "<C-v>k:VBox<CR>", { noremap = true })
+              vim.api.nvim_buf_set_keymap(0, "n", "L", "<C-v>l:VBox<CR>", { noremap = true })
+              vim.api.nvim_buf_set_keymap(0, "n", "H", "<C-v>h:VBox<CR>", { noremap = true })
+              -- draw a box by pressing "f" with visual selection
+              vim.api.nvim_buf_set_keymap(0, "v", "f", ":VBox<CR>", { noremap = true })
+            else
+              vim.cmd([[setlocal ve=]])
+              vim.cmd([[mapclear <buffer>]])
+              vim.b.venn_enabled = nil
+            end
+          end
+
+          Toggle_venn()
+        end,
+        desc = "Open Venn panel",
+      },
+    },
+  },
+
+  {
+    "ellisonleao/glow.nvim",
+    config = true,
+    cmd = "Glow",
+    ft = "markdown",
+    keys = {
+      {
+        "<leader>pm",
+        "<cmd>Glow<cr>",
+        desc = "Preview Markdown",
+      },
+    },
+  },
+
+  {
+    "jbyuki/nabla.nvim",
+    lazy = true,
+    -- ft = { "tex", "latex", "markdown" },
+    -- opts = {
+    --   autogen = true, -- auto-regenerate ASCII art when exiting insert mode
+    --   silent = true, -- silents error messages
+    -- },
+    -- config = function()
+    --   local nabla = require("nabla")
+    --   nabla.enable_virt()
+    -- end,
+    keys = {
+      {
+        "<leader>pe",
+        function()
+          require("nabla").toggle_virt()
+        end,
+        desc = "Preview Math Equation",
+      },
+    },
+  },
+
+  {
+    "lervag/vimtex",
+    config = function()
+      -- vim.g.vimtex_compiler_progname = "nvr"
+      -- vim.g.vimtex_view_method = "zathura"
+    end,
   },
 }
