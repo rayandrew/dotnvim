@@ -219,20 +219,24 @@ return {
           enable = true,
           set_jumps = true,
           goto_next_start = {
-            ["]m"] = "@function.outer",
-            ["]]"] = "@class.outer",
+            ["]k"] = { query = "@block.outer", desc = "Next block start" },
+            ["]f"] = { query = "@function.outer", desc = "Next function start" },
+            ["]a"] = { query = "@parameter.inner", desc = "Next parameter start" },
           },
           goto_next_end = {
-            ["]M"] = "@function.outer",
-            ["]["] = "@class.outer",
+            ["]K"] = { query = "@block.outer", desc = "Next block end" },
+            ["]F"] = { query = "@function.outer", desc = "Next function end" },
+            ["]A"] = { query = "@parameter.inner", desc = "Next parameter end" },
           },
           goto_previous_start = {
-            ["[m"] = "@function.outer",
-            ["[["] = "@class.outer",
+            ["[k"] = { query = "@block.outer", desc = "Previous block start" },
+            ["[f"] = { query = "@function.outer", desc = "Previous function start" },
+            ["[a"] = { query = "@parameter.inner", desc = "Previous parameter start" },
           },
           goto_previous_end = {
-            ["[M"] = "@function.outer",
-            ["[]"] = "@class.outer",
+            ["[K"] = { query = "@block.outer", desc = "Previous block end" },
+            ["[F"] = { query = "@function.outer", desc = "Previous function end" },
+            ["[A"] = { query = "@parameter.inner", desc = "Previous parameter end" },
           },
         },
         swap = {
@@ -313,7 +317,7 @@ return {
           if vim.bo.filetype == "oil" then
             return
           end
-          require("oil").open()
+          require("oil").open_float()
         end,
         desc = "Open current directory",
       },
@@ -328,12 +332,101 @@ return {
         end,
         desc = "Open current directory",
       },
+      -- {
+      --   "<leader>h",
+      --   function()
+      --     if vim.bo.filetype == "oil" then
+      --       local oil = require("oil")
+      --       oil.toggle_hidden()
+      --     end
+      --   end,
+      -- },
+      -- {
+      --   "t",
+      --   function()
+      --     if vim.bo.filetype == "oil" then
+      --       local oil = require("oil")
+      --       oil.select()
+      --     end
+      --   end,
+      -- },
+      -- {
+      --   "q",
+      --   function()
+      --     if vim.bo.filetype == "oil" then
+      --       local oil = require("oil")
+      --       oil.close()
+      --     end
+      --   end,
+      -- },
+      -- {
+      --   "<leader>i",
+      --   function()
+      --     if vim.bo.filetype == "oil" then
+      --       local oil = require("oil")
+      --       vim.g.oil_show_info = not vim.g.oil_show_info
+      --       if vim.g.oil_show_info then
+      --         oil.set_columns({
+      --           "permissions",
+      --           "size",
+      --           "mtime",
+      --         })
+      --       else
+      --         oil.set_columns({})
+      --       end
+      --       return
+      --     end
+      --   end,
+      -- },
     },
     opts = {
+      columns = {
+        -- "icon",
+        -- "permissions",
+        -- "size",
+        -- "mtime",
+      },
       default_file_explorer = true,
       restore_win_options = true,
+      float = {
+        padding = 2,
+        max_width = 240,
+        max_height = 70,
+        -- width = 0.2,
+        -- max_height = 0.5,
+        border = "rounded",
+        win_options = {
+          winblend = 10,
+        },
+      },
+      keymaps = {
+        ["<C-i>"] = {
+          callback = function()
+            if vim.bo.filetype == "oil" then
+              local oil = require("oil")
+              vim.g.oil_show_info = not vim.g.oil_show_info
+              if vim.g.oil_show_info then
+                oil.set_columns({
+                  "permissions",
+                  "size",
+                  "mtime",
+                  "icon",
+                })
+              else
+                oil.set_columns({})
+              end
+              return
+            end
+          end,
+          desc = "Toggle info",
+        },
+        ["q"] = "actions.close",
+        ["<C-h>"] = "actions.toggle_hidden",
+        ["?"] = "actions.show_help",
+      },
     },
     init = function()
+      vim.g.oil_show_info = false
       if vim.fn.argc() == 1 then
         local stat = vim.loop.fs_stat(vim.fn.argv(0))
         if stat and stat.type == "directory" then
