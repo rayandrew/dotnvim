@@ -733,7 +733,7 @@ return {
           "prettier",
           "eslint_d",
 
-          "black",
+          -- "black",
           "isort",
 
           "shfmt",
