@@ -332,52 +332,6 @@ return {
         end,
         desc = "Open current directory",
       },
-      -- {
-      --   "<leader>h",
-      --   function()
-      --     if vim.bo.filetype == "oil" then
-      --       local oil = require("oil")
-      --       oil.toggle_hidden()
-      --     end
-      --   end,
-      -- },
-      -- {
-      --   "t",
-      --   function()
-      --     if vim.bo.filetype == "oil" then
-      --       local oil = require("oil")
-      --       oil.select()
-      --     end
-      --   end,
-      -- },
-      -- {
-      --   "q",
-      --   function()
-      --     if vim.bo.filetype == "oil" then
-      --       local oil = require("oil")
-      --       oil.close()
-      --     end
-      --   end,
-      -- },
-      -- {
-      --   "<leader>i",
-      --   function()
-      --     if vim.bo.filetype == "oil" then
-      --       local oil = require("oil")
-      --       vim.g.oil_show_info = not vim.g.oil_show_info
-      --       if vim.g.oil_show_info then
-      --         oil.set_columns({
-      --           "permissions",
-      --           "size",
-      --           "mtime",
-      --         })
-      --       else
-      --         oil.set_columns({})
-      --       end
-      --       return
-      --     end
-      --   end,
-      -- },
     },
     opts = {
       columns = {
