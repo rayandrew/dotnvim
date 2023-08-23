@@ -837,7 +837,7 @@ return {
           }),
 
           -- python
-          nls.builtins.formatting.black,
+          -- nls.builtins.formatting.black,
           nls.builtins.formatting.isort,
 
           -- shell
