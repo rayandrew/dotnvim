@@ -633,40 +633,42 @@ return {
       local lsp = require("lsp-zero")
 
       lsp.on_attach(function(_, bufnr)
-        local opts = { buffer = bufnr, remap = false }
+        -- local opts = { buffer = bufnr, remap = false }
+
+        local nmap = function(keys, func, desc)
+          if desc then
+            desc = "LSP: " .. desc
+          end
+
+          vim.keymap.set("n", keys, func, { buffer = bufnr, desc = desc, remap = false })
+        end
 
         lsp.default_keymaps({ buffer = bufnr })
 
-        vim.keymap.set("n", "gd", function()
-          vim.lsp.buf.definition()
-        end, opts)
-        vim.keymap.set("n", "K", function()
-          vim.lsp.buf.hover()
-        end, opts)
-        vim.keymap.set("n", "<leader>vws", function()
-          vim.lsp.buf.workspace_symbol()
-        end, opts)
-        vim.keymap.set("n", "<leader>vd", function()
-          vim.diagnostic.open_float()
-        end, opts)
-        vim.keymap.set("n", "[d", function()
-          vim.diagnostic.goto_next()
-        end, opts)
-        vim.keymap.set("n", "]d", function()
-          vim.diagnostic.goto_prev()
-        end, opts)
-        vim.keymap.set("n", "<leader>ca", function()
-          vim.lsp.buf.code_action()
-        end, opts)
-        vim.keymap.set("n", "<leader>vrr", function()
-          vim.lsp.buf.references()
-        end, opts)
-        vim.keymap.set("n", "<leader>vrn", function()
-          vim.lsp.buf.rename()
-        end, opts)
-        vim.keymap.set("i", "<C-h>", function()
-          vim.lsp.buf.signature_help()
-        end, opts)
+        -- stylua: ignore start
+        nmap("gd", function() vim.lsp.buf.definition() end, "Goto Definition")
+        nmap("<leader>ws", function() require('telescope.builtin').lsp_dynamic_workspace_symbols() end, "Workspace Symbol")
+        nmap("<leader>ds", function() require('telescope.builtin').lsp_document_symbols() end, "Document Symbol")
+        nmap("<leader>df", function() vim.diagnostic.open_float() end, "Diagnostic Float")
+        nmap("gr", require("telescope.builtin").lsp_references, "Goto References")
+        nmap("[d", function() vim.diagnostic.goto_next() end, "Next Diagnostic")
+        nmap("]d", function() vim.diagnostic.goto_prev() end, "Prev Diagnostic")
+        nmap("<leader>ca", function() vim.lsp.buf.code_action() end, "Code Action")
+        nmap("<leader>vrr", function() vim.lsp.buf.references() end, "References")
+        nmap("<leader>rn", function() vim.lsp.buf.rename() end, "Rename")
+
+        nmap("K", function() vim.lsp.buf.hover() end, "Hover")
+        nmap("<C-k>", function() vim.lsp.buf.signature_help() end, "Signature Help")
+
+        nmap("gD", function() vim.lsp.buf.declaration() end, "Goto Declaration")
+        nmap('<leader>wl', function()
+          print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+        end, '[W]orkspace [L]ist Folders')
+
+        vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
+          vim.lsp.buf.format()
+        end, { desc = 'Format current buffer with LSP' })
+        -- stylua: ignore end
       end)
 
       -- (Optional) Configure lua language server for neovim
