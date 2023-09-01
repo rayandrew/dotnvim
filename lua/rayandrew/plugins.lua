@@ -658,7 +658,7 @@ return {
         nmap("<leader>rn", function() vim.lsp.buf.rename() end, "Rename")
 
         nmap("K", function() vim.lsp.buf.hover() end, "Hover")
-        nmap("<C-k>", function() vim.lsp.buf.signature_help() end, "Signature Help")
+        -- nmap("<C-k>", function() vim.lsp.buf.signature_help() end, "Signature Help")
 
         nmap("gD", function() vim.lsp.buf.declaration() end, "Goto Declaration")
         nmap('<leader>wl', function()
