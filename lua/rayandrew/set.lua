@@ -19,6 +19,7 @@ opt.cursorline = true -- Enable highlighting of the current line
 opt.expandtab = true -- Use spaces instead of tabs
 opt.formatoptions = "jcroqlnt" -- tcqj
 opt.grepformat = "%f:%l:%c:%m"
+-- opt.grepformat = { "%f:%l:%c:%m", "%f:%l:%m,%f" }
 opt.grepprg = "rg --vimgrep"
 opt.hlsearch = false
 opt.ignorecase = true -- Ignore case
@@ -78,3 +79,16 @@ vim.g.markdown_recommended_style = 0
 opt.isfname:append("@-@")
 
 opt.colorcolumn = "80"
+
+-- Error Format
+-- error format for location list
+opt.errorformat:append("%f|%l col %c|%m")
+-- error format for quickfix
+opt.errorformat:append("%f|%l|%m")
+-- error format for grep -rn <pattern> <path>
+opt.errorformat:append("%f:%l:%m")
+-- error format for ls
+opt.errorformat:append("%f:%l:%m")
+-- error format for ls -la
+opt.errorformat:append("%f:%l:%m,%f")
+opt.errorformat:append("%gggggg")

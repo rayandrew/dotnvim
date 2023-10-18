@@ -164,6 +164,11 @@ Util.map("t", "<c-_>", "<cmd>close<cr>", { desc = "which_key_ignore" })
 --        Others
 ------------------------------
 
+-- netrw
+Util.map("n", "<leader>e", function()
+  vim.cmd("Ex")
+end)
+
 -- ufo
 Util.map("n", "zR", function()
   require("ufo").openAllFolds()

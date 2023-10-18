@@ -305,90 +305,90 @@ return {
   --     File Management
   ------------------------------
 
-  {
-    "stevearc/oil.nvim",
-    dependencies = { "nvim-tree/nvim-web-devicons" },
-    cmd = { "Oil" },
-    keys = {
-      {
-        "<leader>e",
-        function()
-          -- disable in oil filetype
-          if vim.bo.filetype == "oil" then
-            return
-          end
-          require("oil").open_float()
-        end,
-        desc = "Open current directory",
-      },
-      {
-        "<leader>E",
-        function()
-          -- disable in oil filetype
-          if vim.bo.filetype == "oil" then
-            return
-          end
-          require("oil").open(".")
-        end,
-        desc = "Open current directory",
-      },
-    },
-    opts = {
-      columns = {
-        -- "icon",
-        -- "permissions",
-        -- "size",
-        -- "mtime",
-      },
-      default_file_explorer = true,
-      restore_win_options = true,
-      float = {
-        padding = 2,
-        max_width = 240,
-        max_height = 70,
-        -- width = 0.2,
-        -- max_height = 0.5,
-        border = "rounded",
-        win_options = {
-          winblend = 10,
-        },
-      },
-      keymaps = {
-        ["<C-i>"] = {
-          callback = function()
-            if vim.bo.filetype == "oil" then
-              local oil = require("oil")
-              vim.g.oil_show_info = not vim.g.oil_show_info
-              if vim.g.oil_show_info then
-                oil.set_columns({
-                  "permissions",
-                  "size",
-                  "mtime",
-                  "icon",
-                })
-              else
-                oil.set_columns({})
-              end
-              return
-            end
-          end,
-          desc = "Toggle info",
-        },
-        ["q"] = "actions.close",
-        ["<C-h>"] = "actions.toggle_hidden",
-        ["?"] = "actions.show_help",
-      },
-    },
-    init = function()
-      vim.g.oil_show_info = false
-      if vim.fn.argc() == 1 then
-        local stat = vim.loop.fs_stat(vim.fn.argv(0))
-        if stat and stat.type == "directory" then
-          require("oil")
-        end
-      end
-    end,
-  },
+  -- {
+  --   "stevearc/oil.nvim",
+  --   dependencies = { "nvim-tree/nvim-web-devicons" },
+  --   cmd = { "Oil" },
+  --   keys = {
+  --     {
+  --       "<leader>e",
+  --       function()
+  --         -- disable in oil filetype
+  --         if vim.bo.filetype == "oil" then
+  --           return
+  --         end
+  --         require("oil").open_float()
+  --       end,
+  --       desc = "Open current directory",
+  --     },
+  --     {
+  --       "<leader>E",
+  --       function()
+  --         -- disable in oil filetype
+  --         if vim.bo.filetype == "oil" then
+  --           return
+  --         end
+  --         require("oil").open(".")
+  --       end,
+  --       desc = "Open current directory",
+  --     },
+  --   },
+  --   opts = {
+  --     columns = {
+  --       -- "icon",
+  --       -- "permissions",
+  --       -- "size",
+  --       -- "mtime",
+  --     },
+  --     default_file_explorer = true,
+  --     restore_win_options = true,
+  --     float = {
+  --       padding = 2,
+  --       max_width = 240,
+  --       max_height = 70,
+  --       -- width = 0.2,
+  --       -- max_height = 0.5,
+  --       border = "rounded",
+  --       win_options = {
+  --         winblend = 10,
+  --       },
+  --     },
+  --     keymaps = {
+  --       ["<C-i>"] = {
+  --         callback = function()
+  --           if vim.bo.filetype == "oil" then
+  --             local oil = require("oil")
+  --             vim.g.oil_show_info = not vim.g.oil_show_info
+  --             if vim.g.oil_show_info then
+  --               oil.set_columns({
+  --                 "permissions",
+  --                 "size",
+  --                 "mtime",
+  --                 "icon",
+  --               })
+  --             else
+  --               oil.set_columns({})
+  --             end
+  --             return
+  --           end
+  --         end,
+  --         desc = "Toggle info",
+  --       },
+  --       ["q"] = "actions.close",
+  --       ["<C-h>"] = "actions.toggle_hidden",
+  --       ["?"] = "actions.show_help",
+  --     },
+  --   },
+  --   init = function()
+  --     vim.g.oil_show_info = false
+  --     -- if vim.fn.argc() == 1 then
+  --     --   local stat = vim.loop.fs_stat(vim.fn.argv(0))
+  --     --   if stat and stat.type == "directory" then
+  --     --     require("oil")
+  --     --   end
+  --     -- end
+  --   end,
+  -- },
 
   -- search/replace in multiple files
   {
@@ -481,6 +481,7 @@ return {
 
   {
     "lukas-reineke/indent-blankline.nvim",
+    main = "ibl",
     event = { "BufReadPost", "BufNewFile" },
     opts = {
       -- char = "▏",
@@ -1147,44 +1148,28 @@ return {
     "mbbill/undotree",
   },
 
-  {
-    "skywind3000/asyncrun.vim",
-    cmd = { "AsyncRun", "AsyncStop" },
-    keys = {
-      {
-        "<leader>cc",
-        function()
-          local input = vim.fn.input("Command: ")
-          vim.cmd("AsyncRun " .. input)
-          -- vim.cmd("sleep 1")
-          -- vim.cmd("copen")
-        end,
-        desc = "AsyncRun",
-      },
-      { "<leader>ck", desc = "AsyncStop" },
-    },
-    config = function()
-      vim.g.asyncrun_open = 6
-    end,
-  },
+  -- {
+  --   "skywind3000/asyncrun.vim",
+  --   cmd = { "AsyncRun", "AsyncStop" },
+  --   keys = {
+  --     {
+  --       "<leader>cc",
+  --       function()
+  --         local input = vim.fn.input("Command: ")
+  --         vim.cmd("AsyncRun " .. input)
+  --         -- vim.cmd("sleep 1")
+  --         -- vim.cmd("copen")
+  --       end,
+  --       desc = "AsyncRun",
+  --     },
+  --     { "<leader>ck", desc = "AsyncStop" },
+  --   },
+  --   config = function()
+  --     vim.g.asyncrun_open = 6
+  --   end,
+  -- },
 
   -- Folke
-  {
-    "folke/flash.nvim",
-    event = "VeryLazy",
-    vscode = true,
-    ---@type Flash.Config
-    opts = {},
-    -- stylua: ignore
-    keys = {
-      { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
-      { "S", mode = { "n", "o", "x" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
-      { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
-      { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
-      { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
-    },
-  },
-
   {
     "folke/trouble.nvim",
     cmd = { "TroubleToggle", "Trouble" },
@@ -1323,35 +1308,6 @@ return {
         end,
       },
     },
-  },
-
-  -- Flash Telescope config
-  {
-    "nvim-telescope/telescope.nvim",
-    optional = true,
-    opts = function(_, opts)
-      local function flash(prompt_bufnr)
-        require("flash").jump({
-          pattern = "^",
-          label = { after = { 0, 0 } },
-          search = {
-            mode = "search",
-            exclude = {
-              function(win)
-                return vim.bo[vim.api.nvim_win_get_buf(win)].filetype ~= "TelescopeResults"
-              end,
-            },
-          },
-          action = function(match)
-            local picker = require("telescope.actions.state").get_current_picker(prompt_bufnr)
-            picker:set_selection(match.pos[1] - 1)
-          end,
-        })
-      end
-      opts.defaults = vim.tbl_deep_extend("force", opts.defaults or {}, {
-        mappings = { n = { s = flash }, i = { ["<c-s>"] = flash } },
-      })
-    end,
   },
 
   -- Tmux
@@ -1564,5 +1520,21 @@ return {
       -- vim.g.vimtex_compiler_progname = "nvr"
       -- vim.g.vimtex_view_method = "zathura"
     end,
+  },
+
+  {
+    "tpope/vim-dispatch",
+    commands = { "Make", "Dispatch", "Copen" },
+    keys = {
+      {
+        "<leader>cc",
+        function()
+          local input = vim.fn.input("Command: ")
+          vim.cmd("Dispatch " .. input)
+        end,
+        desc = "AsyncRun",
+      },
+      { "<leader>ck", desc = "AsyncStop" },
+    },
   },
 }
