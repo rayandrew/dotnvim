@@ -161,13 +161,23 @@ Util.map("t", "<C-/>", "<cmd>close<cr>", { desc = "Hide Terminal" })
 Util.map("t", "<c-_>", "<cmd>close<cr>", { desc = "which_key_ignore" })
 
 ------------------------------
---        Others
+--        Netrw
 ------------------------------
 
 -- netrw
 Util.map("n", "<leader>e", function()
   vim.cmd("Ex")
 end)
+
+-- remap q to quit buffer in netrw
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "netrw",
+  command = "nnoremap <buffer> q <cmd>bd<CR>",
+})
+
+------------------------------
+--        Others
+------------------------------
 
 -- ufo
 Util.map("n", "zR", function()
