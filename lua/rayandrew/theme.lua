@@ -1,15 +1,17 @@
 local M = {}
 
-M.colorscheme = "rose-pine"
+-- M.colorscheme = "rose-pine"
+-- M.colorscheme = "meh"
+M.colorscheme = "rasmus"
 -- M.colorscheme = ""
 
 function M.setup()
   -- taken from https://github.com/LazyVim/LazyVim/blob/566049aa4a26a86219dd1ad1624f9a1bf18831b6/lua/lazyvim/config/init.lua#L117C3-L129C5
   require("lazy.core.util").try(function()
     if M.colorscheme == "" then
-        return
+      return
     end
-    
+
     if type(M.colorscheme) == "function" then
       M.colorscheme()
     else

@@ -95,3 +95,11 @@ autocmd({ "BufWritePre" }, {
   pattern = "*",
   command = [[%s/\s\+$//e]],
 })
+
+-- vim.api.nvim_create_autocmd({ "WinNew", "WinClosed", "WinEnter" }, {
+--   group = vim.api.nvim_create_augroup("on_demand_wrap", {}),
+--   callback = function()
+--     local should_wrap = vim.api.nvim_win_get_width(0) ~= vim.o.columns
+--     vim.api.nvim_win_set_option(0, "wrap", should_wrap)
+--   end,
+-- })

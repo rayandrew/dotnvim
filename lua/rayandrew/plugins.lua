@@ -301,6 +301,18 @@ return {
     lazy = true,
   },
 
+  {
+    "davidosomething/vim-colors-meh",
+    name = "meh",
+    lazy = true,
+  },
+
+  {
+    "kvrohit/rasmus.nvim",
+    name = "rasmus",
+    lazy = true,
+  },
+
   ------------------------------
   --     File Management
   ------------------------------
@@ -484,15 +496,11 @@ return {
     main = "ibl",
     event = { "BufReadPost", "BufNewFile" },
     opts = {
-      indent = { char = "│" },
-      scope = { enabled = true },
+      -- char = "▏",
+      indent = {
+        char = "│",
+      },
       exclude = {
-        buftypes = {
-          "terminal",
-          "nofile",
-          "quickfix",
-          "prompt",
-        },
         filetypes = {
           "help",
           "alpha",
@@ -506,7 +514,17 @@ return {
           "lazyterm",
           "qf",
         },
+        buftypes = {
+          "terminal",
+          "nofile",
+          "quickfix",
+          "prompt",
+        },
       },
+      scope = {
+        enabled = true,
+      },
+      -- show_trailing_blankline_indent = false,
     },
   },
 
@@ -648,7 +666,7 @@ return {
 
         -- stylua: ignore start
         nmap("gd", function() vim.lsp.buf.definition() end, "Goto Definition")
-        nmap("<leader>ws", function() require('telescope.builtin').lsp_dynamic_workspace_symbols() end, "Workspace Symbol")
+        -- nmap("<leader>ws", function() require('telescope.builtin').lsp_dynamic_workspace_symbols() end, "Workspace Symbol")
         nmap("<leader>ds", function() require('telescope.builtin').lsp_document_symbols() end, "Document Symbol")
         nmap("<leader>df", function() vim.diagnostic.open_float() end, "Diagnostic Float")
         nmap("gr", require("telescope.builtin").lsp_references, "Goto References")
@@ -959,80 +977,83 @@ return {
 
   -- RSI compatibility
   {
-    "linty-org/readline.nvim",
-    event = "VeryLazy",
-    keys = {
-      {
-        "<M-f>",
-        function()
-          require("readline").forward_word()
-        end,
-        mode = "!",
-      },
-      {
-        "<M-b>",
-        function()
-          require("readline").backward_word()
-        end,
-        mode = "!",
-      },
-      {
-        "<M-d>",
-        function()
-          require("readline").kill_word()
-        end,
-        mode = "!",
-      },
-      {
-        "<M-BS>",
-        function()
-          require("readline").backward_kill_word()
-        end,
-        mode = "!",
-      },
-      {
-        "<C-w>",
-        function()
-          require("readline").unix_word_rubout()
-        end,
-        mode = "!",
-      },
-      {
-        "<C-k>",
-        function()
-          require("readline").kill_line()
-        end,
-        mode = "!",
-      },
-      {
-        "<C-u>",
-        function()
-          require("readline").backward_kill_line()
-        end,
-        mode = "!",
-      },
-      {
-        "<C-a>",
-        function()
-          require("readline").beginning_of_line()
-        end,
-        mode = "!",
-      },
-      {
-        "<C-e>",
-        function()
-          require("readline").end_of_line()
-        end,
-        mode = "!",
-      },
-      { "<C-f>", "<Right>", mode = "!" }, -- forward-char
-      { "<C-b>", "<Left>", mode = "!" }, -- backward-char
-      { "<C-n>", "<Down>", mode = "!" }, -- next-line
-      { "<C-p>", "<Up>", mode = "!" }, -- previous-line
-      { "<C-d>", "<Delete>", mode = "!" }, -- delete-char
-      { "<C-h>", "<BS>", mode = "!" }, -- backward-delete-char
-    },
+    "tpope/vim-rsi",
   },
+  -- {
+  --   "assistcontrol/readline.nvim",
+  --   event = "VeryLazy",
+  --   keys = {
+  --     {
+  --       "<M-f>",
+  --       function()
+  --         require("readline").forward_word()
+  --       end,
+  --       mode = "!",
+  --     },
+  --     {
+  --       "<M-b>",
+  --       function()
+  --         require("readline").backward_word()
+  --       end,
+  --       mode = "!",
+  --     },
+  --     {
+  --       "<M-d>",
+  --       function()
+  --         require("readline").kill_word()
+  --       end,
+  --       mode = "!",
+  --     },
+  --     {
+  --       "<M-BS>",
+  --       function()
+  --         require("readline").backward_kill_word()
+  --       end,
+  --       mode = "!",
+  --     },
+  --     {
+  --       "<C-w>",
+  --       function()
+  --         require("readline").unix_word_rubout()
+  --       end,
+  --       mode = "!",
+  --     },
+  --     {
+  --       "<C-k>",
+  --       function()
+  --         require("readline").kill_line()
+  --       end,
+  --       mode = "!",
+  --     },
+  --     {
+  --       "<C-u>",
+  --       function()
+  --         require("readline").backward_kill_line()
+  --       end,
+  --       mode = "!",
+  --     },
+  --     {
+  --       "<C-a>",
+  --       function()
+  --         require("readline").beginning_of_line()
+  --       end,
+  --       mode = "!",
+  --     },
+  --     {
+  --       "<C-e>",
+  --       function()
+  --         require("readline").end_of_line()
+  --       end,
+  --       mode = "!",
+  --     },
+  --     { "<C-f>", "<Right>", mode = "!" }, -- forward-char
+  --     { "<C-b>", "<Left>", mode = "!" }, -- backward-char
+  --     { "<C-n>", "<Down>", mode = "!" }, -- next-line
+  --     { "<C-p>", "<Up>", mode = "!" }, -- previous-line
+  --     { "<C-d>", "<Delete>", mode = "!" }, -- delete-char
+  --     { "<C-h>", "<BS>", mode = "!" }, -- backward-delete-char
+  --   },
+  -- },
 
   {
     "tpope/vim-fugitive",
@@ -1134,6 +1155,25 @@ return {
 
   {
     "github/copilot.vim",
+    init = function()
+      -- vim.g.copilot_no_tab_map = true
+      -- vim.g.copilot_assume_mapped = true
+      -- vim.g.copilot_tab_fallback = ""
+      vim.g.copilot_filetypes = {
+        ["*"] = false,
+        ["awk"] = true,
+        ["lua"] = true,
+        ["html"] = true,
+        ["javascript"] = true,
+        ["typescript"] = true,
+        ["rust"] = true,
+        ["c"] = true,
+        ["c#"] = true,
+        ["c++"] = true,
+        ["go"] = true,
+        ["python"] = true,
+      }
+    end,
   },
 
   {
@@ -1536,5 +1576,13 @@ return {
       },
       { "<leader>ck", desc = "AsyncStop" },
     },
+  },
+
+  {
+    "chipsenkbeil/distant.nvim",
+    branch = "v0.3",
+    config = function()
+      require("distant"):setup()
+    end,
   },
 }

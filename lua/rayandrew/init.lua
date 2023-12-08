@@ -6,6 +6,7 @@ function M.setup()
   require("rayandrew.autocmds")
   require("rayandrew.remap")
   require("rayandrew.theme").setup()
+  require("rayandrew.filetype").setup()
   -- require("rayandrew.statusline").setup()
 end
 
