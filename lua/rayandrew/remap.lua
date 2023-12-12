@@ -165,14 +165,31 @@ Util.map("t", "<c-_>", "<cmd>close<cr>", { desc = "which_key_ignore" })
 ------------------------------
 
 -- netrw
-Util.map("n", "<leader>e", function()
-  vim.cmd("Ex")
-end)
+-- Util.map("n", "<leader>e", function()
+--   vim.cmd("Ex")
+-- end)
 
 -- remap q to quit buffer in netrw
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "netrw",
   command = "nnoremap <buffer> q <cmd>bd<CR>",
+})
+
+-- disable ctrl-h and ctrl-l in netrw and change it to TmuxNavigateLeft and TmuxNavigateRight
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "netrw",
+  command = "nnoremap <buffer> <C-h> <cmd>TmuxNavigateLeft<CR>",
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "netrw",
+  command = "nnoremap <buffer> <C-l> <cmd>TmuxNavigateRight<CR>",
+})
+
+-- change refresh netrw to r
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "netrw",
+  command = "nnoremap <buffer> r <cmd>edit<CR>",
 })
 
 ------------------------------

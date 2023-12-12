@@ -103,3 +103,9 @@ autocmd({ "BufWritePre" }, {
 --     vim.api.nvim_win_set_option(0, "wrap", should_wrap)
 --   end,
 -- })
+
+vim.api.nvim_create_autocmd({ "VimLeave" }, {
+  callback = function()
+    vim.fn.jobstart('notify-send "hello"', { detach = true })
+  end,
+})

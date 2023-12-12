@@ -166,6 +166,14 @@ return {
           load_textobjects = true
         end,
       },
+
+      {
+        "IndianBoy42/tree-sitter-just",
+        dependencies = "nvim-treesitter/nvim-treesitter",
+        config = function(_, opts)
+          require("tree-sitter-just").setup({})
+        end,
+      },
     },
     opts = {
       highlight = { enable = true },
@@ -256,6 +264,7 @@ return {
       { "<bs>", desc = "Decrement selection", mode = "x" },
     },
     config = function(_, opts)
+      require("nvim-treesitter.install").compilers = { "gcc", "clang" }
       if type(opts.ensure_installed) == "table" then
         ---@type table<string, boolean>
         local added = {}
@@ -316,6 +325,146 @@ return {
   ------------------------------
   --     File Management
   ------------------------------
+
+  {
+    "nvim-neo-tree/neo-tree.nvim",
+    branch = "v3.x",
+    cmd = "Neotree",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
+      "MunifTanjim/nui.nvim",
+      "3rd/image.nvim", -- Optional image support in preview window: See `# Preview Mode` for more information
+    },
+    opts = {
+      sources = { "filesystem", "buffers", "git_status", "document_symbols" },
+      open_files_do_not_replace_types = { "terminal", "Trouble", "trouble", "qf", "Outline" },
+      filesystem = {
+        bind_to_cwd = false,
+        follow_current_file = { enabled = true },
+        use_libuv_file_watcher = true,
+        hijack_netrw_behavior = "open_current",
+      },
+      window = {
+        mappings = {
+          ["<space>"] = "none",
+          -- ["C"] = "copy",
+          ["C"] = {
+            "copy",
+            config = {
+              show_path = "absolute", -- "none", "relative", "absolute"
+            },
+          },
+          ["R"] = "rename",
+          ["y"] = function(state)
+            local node = state.tree:get_node()
+            local filename = node.name
+            vim.fn.setreg("+", filename)
+            vim.notify("Copied: " .. filename)
+          end,
+          ["Y"] = function(state)
+            local node = state.tree:get_node()
+            local filepath = node:get_id()
+            vim.fn.setreg("+", filepath)
+            vim.notify("Copied: " .. filepath)
+          end,
+        },
+      },
+      default_component_configs = {
+        indent = {
+          with_expanders = true, -- if nil and file nesting is enabled, will enable expanders
+          expander_collapsed = "",
+          expander_expanded = "",
+          expander_highlight = "NeoTreeExpander",
+        },
+      },
+    },
+    keys = {
+      {
+        "<leader>E",
+        function()
+          vim.cmd("Neotree toggle position=current")
+        end,
+        desc = "Toggle NeoTree as Buffer",
+      },
+      {
+        "<leader>e",
+        function()
+          vim.cmd("Neotree toggle")
+        end,
+        desc = "Toggle NeoTree",
+      },
+    },
+    deactivate = function()
+      vim.cmd([[Neotree close]])
+    end,
+    init = function()
+      if vim.fn.argc(-1) == 1 then
+        local stat = vim.loop.fs_stat(vim.fn.argv(0))
+        if stat and stat.type == "directory" then
+          require("neo-tree")
+        end
+      end
+    end,
+    config = function(_, opts)
+      local function on_move(data)
+        Util.lsp.on_rename(data.source, data.destination)
+      end
+
+      local events = require("neo-tree.events")
+      opts.event_handlers = opts.event_handlers or {}
+      vim.list_extend(opts.event_handlers, {
+        { event = events.FILE_MOVED, handler = on_move },
+        { event = events.FILE_RENAMED, handler = on_move },
+      })
+      require("neo-tree").setup(opts)
+      vim.api.nvim_create_autocmd("TermClose", {
+        pattern = "*lazygit",
+        callback = function()
+          if package.loaded["neo-tree.sources.git_status"] then
+            require("neo-tree.sources.git_status").refresh()
+          end
+        end,
+      })
+    end,
+  },
+
+  -- {
+  --   "X3eRo0/dired.nvim",
+  --   dependencies = { "MunifTanjim/nui.nvim" },
+  --   opts = {
+  --     path_separator = "/", -- Use '/' as the path separator
+  --     show_hidden = true, -- Show hidden files
+  --     show_banner = false, -- Do not show the banner
+  --     hide_details = false, -- Show file details by default
+  --     sort_order = "name", -- Sort files by name by default
+  --
+  --     -- Define keybindings for various 'dired' actions
+  --     keybinds = {
+  --       dired_enter = "<cr>",
+  --       dired_back = "-",
+  --       dired_up = "_",
+  --       dired_rename = "R",
+  --       dired_quit = "q",
+  --       dired_create = "+",
+  --       dired_toggle_colors = "@",
+  --     },
+  --   },
+  --   keys = {
+  --     { "<leader>e", "<cmd>Dired<cr>", desc = "Dired" },
+  --   },
+  --   config = function(_, opts)
+  --     require("dired").setup(opts)
+  --     vim.api.nvim_create_autocmd("FileType", {
+  --       pattern = "dired",
+  --       callback = function()
+  --         local Util = require("rayandrew.util")
+  --         Util.map("n", "c", "<cmd>DiredCreate<cr>")
+  --         Util.map("n", "g", "<cmd>edit<cr>")
+  --       end,
+  --     })
+  --   end,
+  -- },
 
   -- {
   --   "stevearc/oil.nvim",
@@ -1063,7 +1212,8 @@ return {
   {
     "laytan/cloak.nvim",
     event = {
-      "BufEnter .env*",
+      "BufEnter .env",
+      "BufEnter .env.*",
     },
     cmd = {
       "CloakEnable",
@@ -1078,7 +1228,8 @@ return {
       patterns = {
         {
           file_pattern = {
-            ".env*",
+            ".env",
+            ".env.*",
             ".dev.vars",
           },
           cloak_pattern = "=.+",
@@ -1160,18 +1311,8 @@ return {
       -- vim.g.copilot_assume_mapped = true
       -- vim.g.copilot_tab_fallback = ""
       vim.g.copilot_filetypes = {
-        ["*"] = false,
-        ["awk"] = true,
-        ["lua"] = true,
-        ["html"] = true,
-        ["javascript"] = true,
-        ["typescript"] = true,
-        ["rust"] = true,
-        ["c"] = true,
-        ["c#"] = true,
-        ["c++"] = true,
-        ["go"] = true,
-        ["python"] = true,
+        ["*"] = true,
+        ["text"] = false,
       }
     end,
   },
@@ -1584,5 +1725,38 @@ return {
     config = function()
       require("distant"):setup()
     end,
+  },
+
+  {
+    "3rd/image.nvim",
+    opts = {
+      backend = "kitty",
+      integrations = {
+        markdown = {
+          enabled = true,
+          clear_in_insert_mode = false,
+          download_remote_images = true,
+          only_render_image_at_cursor = false,
+          filetypes = { "markdown", "vimwiki" }, -- markdown extensions (ie. quarto) can go here
+        },
+        neorg = {
+          enabled = true,
+          clear_in_insert_mode = false,
+          download_remote_images = true,
+          only_render_image_at_cursor = false,
+          filetypes = { "norg" },
+        },
+      },
+      max_width = nil,
+      max_height = nil,
+      max_width_window_percentage = nil,
+      max_height_window_percentage = 50,
+      window_overlap_clear_enabled = false, -- toggles images when windows are overlapped
+      window_overlap_clear_ft_ignore = { "cmp_menu", "cmp_docs", "" },
+      editor_only_render_when_focused = false, -- auto show/hide images when the editor gains/looses focus
+      tmux_show_only_in_active_window = false, -- auto show/hide images in the correct Tmux window (needs visual-activity off)
+      hijack_file_patterns = { "*.png", "*.jpg", "*.jpeg", "*.gif", "*.webp" }, -- render image files as images when opened
+    },
+    config = true,
   },
 }
