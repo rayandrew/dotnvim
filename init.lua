@@ -1,3 +1,2 @@
-local ray = require("rayandrew")
-
-ray.setup()
+-- bootstrap lazy.nvim, LazyVim and your plugins
+require("config.lazy")
