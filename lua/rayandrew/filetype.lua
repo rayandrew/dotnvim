@@ -10,6 +10,7 @@ function M.setup()
   -- set tabs=4 and use tabs in txt files
   autocmd("filetype", {
     pattern = "text",
+    -- pattern = "BufEnter *.txt",
     group = group,
     callback = function()
       vim.bo.tabstop = 4

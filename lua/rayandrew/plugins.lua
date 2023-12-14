@@ -299,6 +299,10 @@ return {
   },
   {
     "nvim-treesitter/nvim-treesitter-context",
+    opts = {
+      multiline_threshold = 1,
+    },
+    config = true,
   },
 
   ------------------------------
@@ -358,7 +362,10 @@ return {
           ["R"] = "rename",
           ["y"] = function(state)
             local node = state.tree:get_node()
-            local filename = node.name
+            -- get relative path
+            local filepath = node:get_id()
+            local filename = vim.fn.fnamemodify(filepath, ":.")
+            -- local filename = node.name
             vim.fn.setreg("+", filename)
             vim.notify("Copied: " .. filename)
           end,
@@ -952,7 +959,7 @@ return {
           "prettier",
           "eslint_d",
 
-          -- "black",
+          "black",
           "isort",
 
           "shfmt",
