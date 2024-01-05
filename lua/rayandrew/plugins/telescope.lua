@@ -1,7 +1,9 @@
+------------------------------
+--         Telescope        --
+------------------------------
+
 return {
 
-  --         Telescope
-  ------------------------------
   {
     "nvim-telescope/telescope.nvim",
     cmd = "Telescope",

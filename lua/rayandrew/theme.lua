@@ -2,7 +2,8 @@ local M = {}
 
 -- M.colorscheme = "rose-pine"
 -- M.colorscheme = "meh"
-M.colorscheme = "rasmus"
+-- M.colorscheme = "rasmus"
+M.colorscheme = "everforest"
 -- M.colorscheme = ""
 
 function M.setup()

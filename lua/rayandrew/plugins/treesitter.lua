@@ -1,3 +1,5 @@
+local load_textobjects = false
+
 return {
   ------------------------------
   --         TreeSitter
@@ -141,14 +143,25 @@ return {
       end
     end,
   },
+
   {
     "nvim-treesitter/playground",
   },
+
   {
     "nvim-treesitter/nvim-treesitter-context",
     opts = {
       multiline_threshold = 1,
     },
     config = true,
+  },
+
+  {
+    "simrat39/symbols-outline.nvim",
+    opts = {},
+    cmd = { "SymbolsOutline", "SymbolsOutlineOpen", "SymbolsOutlineClose" },
+    keys = {
+      { "<leader>so", "<cmd>SymbolsOutline<CR>", desc = "Symbols Outline" },
+    },
   },
 }
