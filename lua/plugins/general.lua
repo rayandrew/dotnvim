@@ -1,13 +1,16 @@
 return {
-  {
-    "kvrohit/rasmus.nvim",
-    name = "rasmus",
-    lazy = true,
-  },
+  -- {
+  --   "kvrohit/rasmus.nvim",
+  --   name = "rasmus",
+  --   lazy = true,
+  -- },
+  { "neanias/everforest-nvim", lazy = true, name = "everforest", opts = {
+    background = "hard",
+  } },
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "rasmus",
+      colorscheme = "everforest",
     },
   },
 
