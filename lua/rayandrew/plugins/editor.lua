@@ -26,7 +26,7 @@ return {
             if venn_enabled == "nil" then
               vim.b.venn_enabled = true
               vim.cmd([[setlocal ve=all]])
-              -- draw a line on HJKL keystokes
+              -- draw a line on HJKL keystrokes
               vim.api.nvim_buf_set_keymap(0, "n", "J", "<C-v>j:VBox<CR>", { noremap = true })
               vim.api.nvim_buf_set_keymap(0, "n", "K", "<C-v>k:VBox<CR>", { noremap = true })
               vim.api.nvim_buf_set_keymap(0, "n", "L", "<C-v>l:VBox<CR>", { noremap = true })
@@ -94,6 +94,7 @@ return {
 
   {
     "3rd/image.nvim",
+    enabled = not vim.g.neovide,
     opts = {
       backend = "kitty",
       integrations = {

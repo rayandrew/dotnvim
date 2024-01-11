@@ -44,7 +44,7 @@ return {
         "<leader>sp",
         function()
           local Util = require("rayandrew.util")
-          local fn = Util.telescope("live_grep")
+          local fn = Util.telescope("live_grep", { cwd = vim.loop.cwd() })
           fn()
         end,
         desc = "Find in Files (Grep)",

@@ -7,6 +7,7 @@ function M.setup()
   require("rayandrew.remap")
   require("rayandrew.theme").setup()
   require("rayandrew.commands")
+  require("rayandrew.neovide")
   -- require("rayandrew.filetype").setup()
   -- require("rayandrew.statusline").setup()
 end

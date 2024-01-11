@@ -1,3 +1,5 @@
+local Util = require("rayandrew.util")
+
 return {
   ------------------------------
   --     File Management
@@ -88,7 +90,7 @@ return {
     -- end,
     config = function(_, opts)
       local function on_move(data)
-        Util.lsp.on_rename(data.source, data.destination)
+        -- Util.lsp.on_rename(data.source, data.destination)
       end
 
       local events = require("neo-tree.events")
