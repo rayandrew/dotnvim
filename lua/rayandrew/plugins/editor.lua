@@ -6,12 +6,12 @@ return {
     config = true,
     -- stylua: ignore
     keys = {
-      { "]t", function() require("todo-comments").jump_next() end, desc = "Next todo comment" },
-      { "[t", function() require("todo-comments").jump_prev() end, desc = "Previous todo comment" },
-      { "<leader>xt", "<cmd>TodoTrouble<cr>", desc = "Todo (Trouble)" },
-      { "<leader>xT", "<cmd>TodoTrouble keywords=TODO,FIX,FIXME<cr>", desc = "Todo/Fix/Fixme (Trouble)" },
-      { "<leader>st", "<cmd>TodoTelescope<cr>", desc = "Todo" },
-      { "<leader>sT", "<cmd>TodoTelescope keywords=TODO,FIX,FIXME<cr>", desc = "Todo/Fix/Fixme" },
+      { "]t",         function() require("todo-comments").jump_next() end, desc = "Next todo comment" },
+      { "[t",         function() require("todo-comments").jump_prev() end, desc = "Previous todo comment" },
+      { "<leader>xt", "<cmd>TodoTrouble<cr>",                              desc = "Todo (Trouble)" },
+      { "<leader>xT", "<cmd>TodoTrouble keywords=TODO,FIX,FIXME<cr>",      desc = "Todo/Fix/Fixme (Trouble)" },
+      { "<leader>st", "<cmd>TodoTelescope<cr>",                            desc = "Todo" },
+      { "<leader>sT", "<cmd>TodoTelescope keywords=TODO,FIX,FIXME<cr>",    desc = "Todo/Fix/Fixme" },
     },
   },
 
@@ -155,6 +155,63 @@ return {
     },
     config = function(_, opts)
       require("cloak").setup(opts)
+    end,
+  },
+
+  -- chezmoi
+  {
+    "alker0/chezmoi.vim",
+    lazy = false,
+    init = function()
+      -- This option is required.
+      vim.g["chezmoi#use_tmp_buffer"] = true
+      -- add other options here if needed.
+    end,
+  },
+
+  {
+    "xvzc/chezmoi.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    branch = "refactor",
+    opts = {
+      edit = {
+        watch = true, -- Set true to automatically apply on save.
+        force = true, -- Set true to force apply. Works only when watch = true.
+      },
+      notification = {
+        on_open = false, -- vim.notify when start editing chezmoi-managed file.
+        on_save = true, -- vim.notify on apply.
+        on_watch = true,
+      },
+    },
+    config = function(_, opts)
+      -- local chezmoi_dir = os.getenv("HOME") .. "/.config/dotfiles"
+      local dotfiles_dir = os.getenv("HOME") .. "/Code/dotfiles"
+      local chezmoi_dir = dotfiles_dir .. "/chezmoi"
+      local Util = require("rayandrew.util")
+      local telescope_ok, telescope = pcall(require, "telescope")
+      if telescope_ok then
+        telescope.load_extension("chezmoi")
+        -- check if current directory is a chezmoi directory
+        local cwd = vim.fn.getcwd()
+        if cwd == chezmoi_dir then
+          Util.map("n", "<leader>ff", telescope.extensions.chezmoi.find_files, { noremap = true, silent = true })
+          Util.map("n", "<leader>fc", Util.telescope("files", { cwd = false }), { noremap = true, silent = true })
+        else
+          Util.map("n", "<leader>fc", telescope.extensions.chezmoi.find_files, { noremap = true, silent = true })
+          Util.map("n", "<leader>ff", Util.telescope("files", { cwd = false }), { noremap = true, silent = true })
+        end
+      end
+
+      vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+        -- pattern = { os.getenv("HOME") .. "/.local/share/chezmoi/*" },
+        pattern = { chezmoi_dir .. "/*" },
+        -- pattern = { require("chezmoi").source_path },
+        callback = function()
+          -- invoke with vim.schedule() for better startup time
+          vim.schedule(require("chezmoi.commands.__edit").watch)
+        end,
+      })
     end,
   },
 }

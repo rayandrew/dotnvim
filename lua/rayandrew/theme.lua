@@ -4,6 +4,7 @@ local M = {}
 -- M.colorscheme = "meh"
 -- M.colorscheme = "rasmus"
 M.colorscheme = "everforest"
+M.background = "dark"
 -- M.colorscheme = ""
 
 function M.setup()
@@ -18,6 +19,12 @@ function M.setup()
     else
       vim.cmd.colorscheme(M.colorscheme)
     end
+
+    if M.background == "" then
+      return
+    end
+
+    vim.o.background = M.background
   end, {
     msg = "Could not load your colorscheme",
     on_error = function(msg)

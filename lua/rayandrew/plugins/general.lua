@@ -1,5 +1,5 @@
 return {
-  { "folke/lazy.nvim", version = "*" },
+  { "folke/lazy.nvim",       version = "*" },
   { "nvim-lua/plenary.nvim", lazy = true },
 
   {
@@ -31,7 +31,29 @@ return {
     lazy = true,
   },
 
-  { "neanias/everforest-nvim", lazy = true, name = "everforest", opts = {
-    background = "hard",
-  } },
+  {
+    "neanias/everforest-nvim",
+    lazy = true,
+    name = "everforest",
+    opts = {
+      background = "hard",
+    }
+  },
+
+  -- {
+  --   "f-person/auto-dark-mode.nvim",
+  --   config = {
+  --     update_interval = 1000,
+  --     set_dark_mode = function()
+  --       vim.o.background = "dark"
+  --       -- vim.api.nvim_set_option("background", "dark")
+  --       -- vim.cmd("colorscheme gruvbox")
+  --     end,
+  --     set_light_mode = function()
+  --       vim.o.background = "light"
+  --       -- vim.api.nvim_set_option("background", "light")
+  --       -- vim.cmd("colorscheme gruvbox")
+  --     end,
+  --   },
+  -- },
 }

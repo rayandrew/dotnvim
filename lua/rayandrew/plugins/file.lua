@@ -13,7 +13,7 @@ return {
       "nvim-lua/plenary.nvim",
       "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
       "MunifTanjim/nui.nvim",
-      "3rd/image.nvim", -- Optional image support in preview window: See `# Preview Mode` for more information
+      "3rd/image.nvim",              -- Optional image support in preview window: See `# Preview Mode` for more information
     },
     opts = {
       sources = { "filesystem", "buffers", "git_status", "document_symbols" },
@@ -50,6 +50,25 @@ return {
             vim.fn.setreg("+", filepath)
             vim.notify("Copied: " .. filepath)
           end,
+          ["O"] = {
+            command = function(state)
+              local node = state.tree:get_node()
+              local filepath = node.path
+              local osType = os.getenv("OS")
+
+              local command
+
+              if osType == "Windows_NT" then
+                command = "start " .. filepath
+              elseif osType == "Darwin" then
+                command = "open " .. filepath
+              else
+                command = "xdg-open " .. filepath
+              end
+              os.execute(command)
+            end,
+            desc = "open_with_system_defaults",
+          },
         },
       },
       default_component_configs = {
@@ -96,7 +115,7 @@ return {
       local events = require("neo-tree.events")
       opts.event_handlers = opts.event_handlers or {}
       vim.list_extend(opts.event_handlers, {
-        { event = events.FILE_MOVED, handler = on_move },
+        { event = events.FILE_MOVED,   handler = on_move },
         { event = events.FILE_RENAMED, handler = on_move },
       })
       require("neo-tree").setup(opts)

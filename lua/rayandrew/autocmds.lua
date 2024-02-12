@@ -104,8 +104,20 @@ autocmd({ "BufWritePre" }, {
 --   end,
 -- })
 
-vim.api.nvim_create_autocmd({ "VimLeave" }, {
+autocmd({ "VimLeave" }, {
   callback = function()
     vim.fn.jobstart('notify-send "hello"', { detach = true })
   end,
 })
+
+-- translate vimscript below into nvim lua api
+-- autocmd BufWritePost ~/.local/share/chezmoi/* ! chezmoi apply --source-path "%"
+-- autocmd({ "BufWritePost" }, {
+--   group = augroup("chezmoi_apply"),
+--   pattern = "~/.local/share/chezmoi/*",
+--   callback = function(event)
+--     print("chezmoi apply --source-path " .. event.match)
+--     -- vim.fn.jobstart("chezmoi apply --source-path " .. event.match, { detach = true })
+--   end,
+--   -- command = [[! chezmoi apply --source-path "%"]],
+-- })

@@ -2,93 +2,8 @@
 --    LSP CONFIGURATION     --
 ------------------------------
 
+local tools = require("rayandrew.tools")
 local slow_format_filetypes = {}
-
--- https://github.com/chrisgrieser/.config/blob/7dc36c350976010b32ece078edd581687634811a/nvim/lua/plugins/linter-formatter.lua#L214-L234
-local linters = {
-  lua = { "selene" },
-  css = { "stylelint" },
-  sh = { "shellcheck" },
-  markdown = { "markdownlint", "vale" },
-  yaml = { "yamllint" },
-  python = { "pylint" },
-  gitcommit = {},
-  json = {},
-  javascript = {},
-  typescript = {},
-  toml = {},
-  applescript = {},
-  bib = {},
-}
-
--- https://github.com/chrisgrieser/.config/blob/7dc36c350976010b32ece078edd581687634811a/nvim/lua/plugins/linter-formatter.lua#L214-L234
--- PENDING https://github.com/mfussenegger/nvim-lint/issues/355
-for ft, _ in pairs(linters) do
-  table.insert(linters[ft], "codespell")
-  table.insert(linters[ft], "editorconfig-checker")
-end
-
--- https://github.com/chrisgrieser/.config/blob/7dc36c350976010b32ece078edd581687634811a/nvim/lua/plugins/linter-formatter.lua#L214-L234
-local formatters = {
-  lua = { "stylua" },
-  python = { "isort", "black" },
-  javascript = { "biome" },
-  typescript = { "biome" },
-  json = { "biome" },
-  jsonc = { "biome" },
-  nix = { "nixpkgs_fmt" },
-  yaml = { "prettier" },
-  html = { "prettier" },
-  markdown = {
-    "markdown-toc",
-    "markdownlint",
-    -- "injected",
-  },
-  css = { "stylelint", "prettier" },
-  sh = { "shellcheck", "shfmt" },
-  bib = { "trim_whitespace", "bibtex-tidy" },
-  ["_"] = { "trim_whitespace", "trim_newlines", "squeeze_blanks" },
-  ["*"] = { "codespell" },
-}
-
-local debuggers = {}
-
-local dontInstall = {
-  -- installed externally due to its plugins: https://github.com/williamboman/mason.nvim/issues/695
-  "stylelint",
-  -- not real formatters, but pseudo-formatters from conform.nvim
-  "trim_whitespace",
-  "trim_newlines",
-  "squeeze_blanks",
-  "injected",
-  "nixpkgs_fmt",
-}
-
----given the linter- and formatter-list of nvim-lint and conform.nvim, extract a
----list of all tools that need to be auto-installed
----@param myLinters object[]
----@param myFormatters object[]
----@param myDebuggers string[]
----@param ignoreTools string[]
----@return string[] tools
----@nodiscard
-local function toolsToAutoinstall(myLinters, myFormatters, myDebuggers, ignoreTools)
-  -- get all linters, formatters, & debuggers and merge them into one list
-  local linterList = vim.tbl_flatten(vim.tbl_values(myLinters))
-  local formatterList = vim.tbl_flatten(vim.tbl_values(myFormatters))
-  local tools = vim.list_extend(linterList, formatterList)
-  vim.list_extend(tools, myDebuggers)
-
-  -- only unique tools
-  table.sort(tools)
-  tools = vim.fn.uniq(tools)
-
-  -- remove exceptions not to install
-  tools = vim.tbl_filter(function(tool)
-    return not vim.tbl_contains(ignoreTools, tool)
-  end, tools)
-  return tools
-end
 
 return {
   {
@@ -191,7 +106,7 @@ return {
       },
     },
     opts = {
-      formatters_by_ft = formatters,
+      formatters_by_ft = tools.formatters,
       format_on_save = function(bufnr)
         if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
           return
@@ -287,7 +202,7 @@ return {
     event = "VeryLazy",
     config = function()
       local lint = require("lint")
-      lint.linters_by_ft = linters
+      lint.linters_by_ft = tools.linters
 
       lint.linters.shellcheck.args = { "--shell=bash", "--format=json", "-" }
       lint.linters.markdownlint.args = {
@@ -296,7 +211,7 @@ return {
       }
       lint.linters["editorconfig-checker"].args = {
         "-no-color",
-        "-disable-max-line-length", -- only rule of thumb
+        "-disable-max-line-length",          -- only rule of thumb
         "-disable-trim-trailing-whitespace", -- will be formatted anyway
       }
     end,
@@ -310,10 +225,10 @@ return {
     },
     dependencies = { "williamboman/mason.nvim", "williamboman/mason-lspconfig.nvim" },
     config = function()
-      local tools = toolsToAutoinstall(linters, formatters, debuggers, dontInstall)
+      local tools_to_install = tools.getToolsToInstall()
 
       require("mason-tool-installer").setup({
-        ensure_installed = tools,
+        ensure_installed = tools_to_install,
         run_on_start = false, -- triggered manually, since not working with lazy-loading
       })
 
