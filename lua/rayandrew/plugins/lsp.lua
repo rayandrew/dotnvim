@@ -71,7 +71,7 @@ return {
         lsp_zero.on_attach(function(client, bufnr)
           -- see :help lsp-zero-keybindings
           -- to learn the available actions
-          lsp_zero.default_keymaps({ buffer = bufnr })
+          lsp_zero.default_keymaps({ buffer = bufnr, preserve_mappings = false })
         end)
 
         require("mason-lspconfig").setup({
@@ -211,7 +211,7 @@ return {
       }
       lint.linters["editorconfig-checker"].args = {
         "-no-color",
-        "-disable-max-line-length",          -- only rule of thumb
+        "-disable-max-line-length", -- only rule of thumb
         "-disable-trim-trailing-whitespace", -- will be formatted anyway
       }
     end,

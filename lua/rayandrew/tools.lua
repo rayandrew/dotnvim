@@ -5,7 +5,6 @@ local lsps = {
   python = { "pyright" },
 }
 
-
 -- https://github.com/chrisgrieser/.config/blob/7dc36c350976010b32ece078edd581687634811a/nvim/lua/plugins/linter-formatter.lua#L214-L234
 M.linters = {
   lua = { "selene" },
@@ -50,7 +49,7 @@ M.formatters = {
   sh = { "shellcheck", "shfmt" },
   bib = { "trim_whitespace", "bibtex-tidy" },
   ["_"] = { "trim_whitespace", "trim_newlines", "squeeze_blanks" },
-  ["*"] = { "codespell" },
+  -- ["*"] = { "codespell" },
 }
 
 M.debuggers = {}

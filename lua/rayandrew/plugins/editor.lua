@@ -214,4 +214,12 @@ return {
       })
     end,
   },
+
+  {
+    "snakemake/snakemake",
+    ft = "snakemake",
+    config = function(plugin)
+      vim.opt.rtp:append(plugin.dir .. "/misc/vim")
+    end,
+  },
 }

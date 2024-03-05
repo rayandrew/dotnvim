@@ -1,5 +1,5 @@
 return {
-  { "folke/lazy.nvim",       version = "*" },
+  { "folke/lazy.nvim", version = "*" },
   { "nvim-lua/plenary.nvim", lazy = true },
 
   {
@@ -37,8 +37,10 @@ return {
     name = "everforest",
     opts = {
       background = "hard",
-    }
+    },
   },
+
+  { "junegunn/fzf.vim", dependencies = { "junegunn/fzf" } },
 
   -- {
   --   "f-person/auto-dark-mode.nvim",

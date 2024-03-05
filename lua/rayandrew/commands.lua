@@ -1,3 +1,5 @@
+--- [[ Conform ]] commands
+
 -- https://github.com/stevearc/conform.nvim/blob/master/doc/recipes.md#lazy-loading-with-lazynvim
 vim.api.nvim_create_user_command("FormatDisable", function(args)
   if args.bang then
@@ -31,3 +33,24 @@ vim.api.nvim_create_user_command("Format", function(args)
   end
   require("conform").format({ async = true, lsp_fallback = true, range = range })
 end, { range = true })
+
+--- [[ WhiteSpace ]] commands
+
+-- vim.api.nvim_create_user_command("RemoveWhiteSpaceEnable", function()
+--   vim.b.disable_whitespace = false
+--   vim.g.disable_whitespace = false
+-- end, {
+--   desc = "Re-enable whitespace removal on save",
+-- })
+--
+-- vim.api.nvim_create_user_command("RemoveWhiteSpaceDisable", function(args)
+--   if args.bang then
+--     -- RemoveWhiteSpaceDisable! will disable whitespace removal just for this buffer
+--     vim.b.disable_whitespace = true
+--   else
+--     vim.g.disable_whitespace = true
+--   end
+-- end, {
+--   desc = "Disable whitespace removal on save",
+--   bang = true,
+-- })

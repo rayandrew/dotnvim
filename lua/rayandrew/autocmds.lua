@@ -90,11 +90,17 @@ autocmd({ "BufWritePre" }, {
   end,
 })
 
-autocmd({ "BufWritePre" }, {
-  group = augroup("remove_trailing_whitespace"),
-  pattern = "*",
-  command = [[%s/\s\+$//e]],
-})
+-- autocmd({ "BufWritePre" }, {
+--   group = augroup("remove_trailing_whitespace"),
+--   pattern = "*",
+--   callback = function()
+--     if vim.b.disable_whitespace or vim.g.disable_whitespace then
+--       return
+--     end
+--     vim.cmd([[%s/\s\+$//e]])
+--   end,
+--   -- command = [[%s/\s\+$//e]],
+-- })
 
 -- vim.api.nvim_create_autocmd({ "WinNew", "WinClosed", "WinEnter" }, {
 --   group = vim.api.nvim_create_augroup("on_demand_wrap", {}),
@@ -110,14 +116,12 @@ autocmd({ "VimLeave" }, {
   end,
 })
 
--- translate vimscript below into nvim lua api
--- autocmd BufWritePost ~/.local/share/chezmoi/* ! chezmoi apply --source-path "%"
--- autocmd({ "BufWritePost" }, {
---   group = augroup("chezmoi_apply"),
---   pattern = "~/.local/share/chezmoi/*",
---   callback = function(event)
---     print("chezmoi apply --source-path " .. event.match)
---     -- vim.fn.jobstart("chezmoi apply --source-path " .. event.match, { detach = true })
---   end,
---   -- command = [[! chezmoi apply --source-path "%"]],
--- })
+-- set *.smk and Snakefile to filetype=snakemake
+autocmd({ "BufRead", "BufNewFile" }, {
+  group = augroup("snakemake_filetype"),
+  pattern = { "*.smk", "Snakefile" },
+  callback = function()
+    vim.bo.filetype = "snakemake"
+    vim.bo.commentstring = "# %s"
+  end,
+})
