@@ -226,10 +226,6 @@ return {
   },
 
   {
-    "theprimeagen/refactoring.nvim",
-  },
-
-  {
     "github/copilot.vim",
     init = function()
       -- vim.g.copilot_no_tab_map = true
@@ -243,11 +239,8 @@ return {
   },
 
   {
-    "eandrju/cellular-automaton.nvim",
-  },
-
-  {
     "mbbill/undotree",
+    cmd = { "UndotreeToggle" },
   },
 
   {

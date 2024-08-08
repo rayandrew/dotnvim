@@ -40,6 +40,15 @@ return {
     },
   },
 
+  {
+    "thimc/gruber-darker.nvim",
+    lazy = true,
+    opts = {
+      transparent = true,
+    },
+  },
+
+
   { "junegunn/fzf.vim", dependencies = { "junegunn/fzf" } },
 
   -- {

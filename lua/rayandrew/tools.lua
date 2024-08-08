@@ -3,6 +3,7 @@ local M = {}
 local lsps = {
   lua = { "lua-language-server" },
   python = { "pyright" },
+  rust = { "rust_analyzer" },
 }
 
 -- https://github.com/chrisgrieser/.config/blob/7dc36c350976010b32ece078edd581687634811a/nvim/lua/plugins/linter-formatter.lua#L214-L234
@@ -40,6 +41,7 @@ M.formatters = {
   nix = { "alejandra" },
   yaml = { "prettier" },
   html = { "prettier" },
+  rust = { "rustfmt" },
   markdown = {
     "markdown-toc",
     "markdownlint",
