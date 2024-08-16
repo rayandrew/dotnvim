@@ -65,6 +65,22 @@ vim.opt.inccommand = 'split'
 -- Show which line your cursor is on
 vim.opt.cursorline = true
 
+vim.opt.termguicolors = true
+
+-- session
+-- vim.opt.sessionoptions = {
+--   'buffers',
+--   'tabpages',
+--   -- 'curdir',
+--   -- 'folds',
+--   -- 'help',
+--   -- 'winsize',
+--   -- 'winpos',
+--   -- 'terminal',
+--   'globals',
+--   'localoptions',
+-- }
+
 -- Minimal number of screen lines to keep above and below the cursor.
 -- vim.opt.scrolloff = 10
 
@@ -99,6 +115,10 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     vim.highlight.on_yank()
   end,
 })
+
+-- treat underscore and hyphen NOT as word separators
+-- vim.opt.iskeyword:remove '-'
+-- vim.opt.iskeyword:remove '_'
 
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info

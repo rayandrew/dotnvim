@@ -62,20 +62,25 @@ return {
   {
     'echasnovski/mini-git',
     main = 'mini.git',
+    cmd = { 'Git' },
     version = false,
     config = true,
     keys = {
-      { '<leader>gs', '<cmd>lua MiniGit.show_at_cursor()<cr>', mode = 'n' },
-      { '<leader>gs', '<cmd>lua MiniGit.show_at_cursor()<cr>', mode = 'x' },
+      { '<leader>gc', '<cmd>Git commit<cr>', desc = '[G]it [C]ommit' },
+      { '<leader>gC', '<cmd>Git commit --amend<cr>', desc = '[G]it [C]ommit (Amend)' },
+      { '<leader>gl', '<cmd>Git log --oneline<cr>', desc = '[G]it [L]og' },
+      { '<leader>gl', '<cmd>Git log --oneline --follow -- %<cr>', desc = '[G]it [L]og Buffer' },
+      { '<leader>gs', '<cmd>lua MiniGit.show_at_cursor()<cr>', mode = 'n', desc = '[G]it [S]how' },
+      { '<leader>gs', '<cmd>lua MiniGit.show_at_cursor()<cr>', mode = 'x', desc = '[G]it [S]how' },
+      { '<leader>ga', '<cmd>Git add -- %<cr>', desc = '[G]it [A]dd' },
     },
   },
-  -- {
-  --   'echasnovski/mini.comment',
-  --   version = false,
-  --   config = true,
-  --   keys = {
-  --     'gc',
-  --     'gcc',
-  --   },
-  -- },
+  {
+    'echasnovski/mini.diff',
+    version = false,
+    config = true,
+    keys = {
+      { '<leader>go', '<cmd>lua MiniDiff.toggle_overlay()<cr>' },
+    },
+  },
 }

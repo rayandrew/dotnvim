@@ -115,6 +115,7 @@ return {
       --     }
       --   end,
       -- },
+      { 'onsails/lspkind.nvim', config = true },
     },
     config = function()
       -- See `:help cmp`
@@ -123,6 +124,17 @@ return {
       luasnip.config.setup {}
 
       cmp.setup {
+        formatting = {
+          format = require('lspkind').cmp_format {
+            mode = 'symbol_text',
+            maxwidth = 50,
+            ellipsis_char = '...',
+            show_labelDetails = true,
+            before = function(entry, vim_item)
+              return vim_item
+            end,
+          },
+        },
         snippet = {
           expand = function(args)
             luasnip.lsp_expand(args.body)

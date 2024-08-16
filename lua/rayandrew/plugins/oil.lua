@@ -4,6 +4,7 @@ return {
     dependencies = { { 'echasnovski/mini.icons', opts = {} } },
     cmd = { 'Oil' },
     opts = {
+      columns = {},
       default_file_explorer = true,
       restore_win_options = true,
       use_default_keymaps = false,
@@ -46,7 +47,7 @@ return {
                   'permissions',
                   'size',
                   'mtime',
-                  'icon',
+                  -- 'icon',
                 }
               else
                 oil.set_columns {}

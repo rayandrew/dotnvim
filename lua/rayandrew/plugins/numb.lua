@@ -1,7 +1,7 @@
 return {
   {
     'nacro90/numb.nvim',
-    event = 'VimEnter',
+    event = 'BufRead',
     config = true,
   },
 }

@@ -13,9 +13,9 @@ return {
     lazy = true,
     keys = {
       {
-        '<leader>gg',
-        ':Neogit<CR>',
-        desc = 'Neo[g]it',
+        '<leader>gt',
+        ':Neogit<cr>',
+        desc = 'Neo[g]i[t]',
       },
     },
   },
