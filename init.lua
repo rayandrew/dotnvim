@@ -122,6 +122,14 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
+-- https://neovim.discourse.group/t/how-do-i-jump-to-relative-line-number-with-gj-gk/2203/2
+vim.keymap.set({ 'n', 'x' }, 'j', function()
+  return vim.v.count > 0 and 'j' or 'gj'
+end, { noremap = true, expr = true })
+vim.keymap.set({ 'n', 'x' }, 'k', function()
+  return vim.v.count > 0 and 'k' or 'gk'
+end, { noremap = true, expr = true })
+
 -- treat underscore and hyphen NOT as word separators
 -- vim.opt.iskeyword:remove '-'
 -- vim.opt.iskeyword:remove '_'

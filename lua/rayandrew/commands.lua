@@ -143,3 +143,13 @@ end, {
   nargs = '*',
   desc = 'Run compile command',
 })
+
+-- https://www.reddit.com/r/neovim/comments/vnodft/comment/ie87z9r/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
+local wr_group = vim.api.nvim_create_augroup('WinResize', { clear = true })
+
+vim.api.nvim_create_autocmd('VimResized', {
+  group = wr_group,
+  pattern = '*',
+  command = 'wincmd =',
+  desc = 'Automatically resize windows when the host window size changes.',
+})
